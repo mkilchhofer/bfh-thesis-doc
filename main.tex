@@ -1,0 +1,185 @@
+\documentclass[11pt,english,german]{report}
+
+% Package import, Document Settings
+\usepackage[a4paper,inner=3.5cm,outer=2.5cm]{geometry}
+\usepackage[english,ngerman]{babel}
+\usepackage[utf8]{inputenc}
+
+% Packages
+\usepackage[hyphens]{url}
+\usepackage{caption}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{etoolbox}
+\usepackage{fancyhdr}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage[xindy]{glossaries}
+\usepackage{lastpage}
+\usepackage{float}
+\usepackage{makecell}
+\usepackage{ltablex}
+\keepXColumns
+\usepackage{listings}
+\usepackage{csquotes}
+\usepackage{subcaption}
+\usepackage{glossaries}
+\usepackage{pdfpages}
+
+\newcommand{\source}[1]{\caption*{Quelle: {#1}} }
+\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{#1}}{}}
+
+\hypersetup{pdfborder = 0 0 0}
+
+% Glossary
+\makeglossaries	
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+
+\begin{document}
+
+\begin{titlepage}
+\pagenumbering{Alph}
+\begin{center}
+	
+\includegraphics[width=0.08\textwidth]{img/logo/bfh_logo.png}
+
+Berner Fachhochschule | Haute école spécialisée bernoise | Bern University of Applied Sciences
+\vspace{20mm}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
+\HRule \\[0.4cm]
+{\huge LIDAR Einbindung für den Robocup}\\[0.3cm]
+{\huge \bfseries  }
+\HRule \\[2cm]
+
+
+% Author und Dozent
+\vfill
+\end{center}
+\begin{tabular}{ll}
+	Studiengang:  & Informatik, berufsbegleitend \\
+	Autor:        & Marco Kilchhofer \\
+	Betreuer:     & Dr. Reto Koenig\\
+	Auftraggeber: & Dr. Reto Koenig, BFH / Alain Rohr, HFTM\\
+	Experten:     & Dr. Joachim Wolfgang Kaltz\\
+	Datum:        & \today\\
+\end{tabular}
+
+\end{titlepage}
+
+
+\pagenumbering{Roman}
+
+% Inhaltsverzeichnis
+\tableofcontents
+
+\chapter*{Management Summary}
+
+
+\chapter*{Motivation}
+
+
+
+\chapter{Einleitung}
+\pagenumbering{arabic}
+\section{Aufgabenstellung}
+Seit mehreren Jahren bestreitet die \acrshort{hftm} unter der Leitung von Alain Rohr mit dem Solidus Team erfolgreich die internationalen Meisterschaften des RoboCups in der 'Logistics League'.
+Das Team kennt sich meisterlich mit der Ansteuerung der Hardware aus, bittet aber die \acrshort{bfh} um Mithilfe beim Software-Engineering.
+Die Aufgabe dieser Arbeit ist es, ein Software-Design für die einzelnen Komponenten des verwendeten Roboters zu entwerfen. Angelehnt an die Vorgehensweise 'Domain Driven Design' soll konkret anhand des LIDARS gezeigt werden, wie das erarbeitete Software-Design implementiert und genutzt werden soll. Folgende Merkmale soll das Design mindestens aufweisen:
+
+\begin{itemize}
+	\item
+	Die Schnittstelle der einzelnen Domänen muss Programmiersprachen-agnostisch sein
+	
+	\item
+	Die Domänen müssen abgekapselt und unabhängig entwickelt und getestet werden können
+	
+	\item
+	Das Design muss klar vorsehen, dass jedes Jahr das Entwicklungsteam komplett ausgetauscht wird
+\end{itemize}
+Bei dieser Arbeit gilt es auch zu beachten, dass die Software-Fähigkeiten des jeweiligen Entwicklungsteams erst noch ausgebildet werden müssen, es also nötig ist, die Schnittstellen so leicht und verständlich wie möglich zu halten, um nicht eine zu steile Lernkurve als Voraussetzung zu erschaffen.
+
+
+\bigskip
+TODO:
+konkrete Aufgabenstellung, was soll raus kommen -> Howto für Studenten der \gls{HFTM}
+
+\section{HFTM Robocup}
+TODO:
+Roboter erklären, Schule erklären, Studienrichtung?
+
+\section{Lidar}
+TODO:
+was ist \gls{LIDAR}, wozu wird es verwendet, Funktionsweise High-Level
+
+
+
+\section{Vorarbeiten}
+Diese Bachelorarbeit basiert nicht auf einer Projekt2-Arbeit. Die ganze Arbeit entsteht also während einem Semester.
+
+\section{Rahmenbedingungen}
+Die Rahmenbedingungen dieses Projektes wurden gemeinsam mit dem Betreuer definiert:
+\begin{itemize}
+\item a
+\item b
+\item c
+\end{itemize}
+
+
+\chapter{Voraussetzungen}
+\section{Maven Projekt}
+TODO
+\section{Tests}
+TODO
+\section{Git}
+TODO
+\section{MQTT}
+TODO - Stichworte: \gls{MQTT}, Broker, Client, publish, subscribe
+\chapter{Software Design}
+In diesem Kapitel wird ein mögliches Design für den Robocup erläutert.
+\section{Einführung}
+
+
+
+\section{Aufbau eines Services}
+
+
+
+\chapter{Anhang}
+%\pagenumbering{roman}
+\section{Selbstständigkeitserklärung}
+\section{Anderes}
+Foobar\cite{foobar}
+
+
+
+
+\listoffigures
+
+
+% Glossar
+\newglossaryentry{LIDAR}{name={LIDAR},description={light detection and ranging}}
+\newglossaryentry{MQTT}{name={mqtt},description={messsage queueing}}
+
+% Abkürzungen
+\newacronym{hftm}{HFTM}{Höhere Fachschule für Technik Mittelland}
+\newacronym{bfh}{BFH}{Berner Fachhochschule}
+
+
+%Print the glossary
+\printglossaries
+\printglossary[title=Glossar]
+
+\begin{thebibliography}{1}
+	\bibitem{foobar} \url{http://foo/bar} 1.1.1970
+\end{thebibliography}
+
+
+%\newpage
+%\includepdf[pages={1}]{Selbstständigkeitserklärung.pdf}
+\end{document}
