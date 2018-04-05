@@ -28,6 +28,15 @@
 \usepackage{subcaption}
 \usepackage{glossaries}
 \usepackage{pdfpages}
+\usepackage{fancyhdr}
+
+\usepackage{titlesec}
+\assignpagestyle{\chapter}{fancy}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\lhead{LIDAR Einbindung für den Robocup, \the\year}
 
 \newcommand{\source}[1]{\caption*{Quelle: {#1}} }
 \renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{#1}}{}}
