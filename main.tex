@@ -75,12 +75,11 @@ Berner Fachhochschule | Haute école spécialisée bernoise | Bern University of
 	Autor:        & Marco Kilchhofer \\
 	Betreuer:     & Dr. Reto Koenig, \acrshort{bfh}\\
 	Auftraggeber: & Dr. Reto Koenig, \acrshort{bfh} / Alain Rohr, \acrshort{hftm}\\
-	Experten:     & Dr. Joachim Wolfgang Kaltz\\
+	Experte:      & Dr. Joachim Wolfgang Kaltz\\
 	Datum:        & \today\\
 \end{tabular}
 
 \end{titlepage}
-
 
 \pagenumbering{Roman}
 
@@ -134,46 +133,121 @@ Diese Bachelorarbeit basiert nicht auf einer Projekt2-Arbeit. Die ganze Arbeit e
 \section{Rahmenbedingungen}
 Die Rahmenbedingungen dieses Projektes wurden gemeinsam mit dem Betreuer definiert:
 \begin{itemize}
-\item a
-\item b
-\item c
+\item Source-Code für \acrshort{lidar}-Ansteuerung von \acrshort{hftm}, verwenden als Library
+\item Library ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway} von Reto Koenig als Schnittstelle zwischen Hardware, User und Event-Bus
 \end{itemize}
 
 
 \chapter{Voraussetzungen}
 \section{Maven Projekt}
 TODO
-\section{Tests}
+\section{Tests / Unit Tests}
 TODO
 \section{Git}
 TODO
 \section{MQTT}
+\label{sec:mqtt}
 TODO - Stichworte: \acrshort{mqtt}, Broker, Client, publish, subscribe
 
 \chapter{Software Design}
 In diesem Kapitel wird ein mögliches Design für den Robocup erläutert.
 \section{Einführung}
+Bis anhin hat die \acrshort{hftm} am Robocup durchaus erfolgreich mitgespielt. So fragt man sich vielleicht, wieso diese Arbeit überhaupt zu Stande kommt. Offenbar entwickelte man in der Vergangenheit mit einem monolithischen Ansatz. Der Roboter für den Wettbewerb wird gleichzeitig aber ständig komplexer und die Software immer weniger Wartungsfreundlich. Auch müssen sich die Schüler jedes Jahr durchgehend mit allen Schichten (von Hardware bis Business-Logik) neu befassen. In den nachfolgenden Abschnitten soll gezeigt werden, wie man einzelne Funktionen in Domänen unterteilt und dazwischen simple und nachhaltigere Schnittstellen (\acrshort{api}) realisieren kann.
+
+
+
+\bigskip
+TODO
 Stichworte: Microservice vs Monolith, gemeinsamer Event-Bus
-\section{Aufbau eines Services}
+
+\section{Architekur}
+Im Kapitel \ref{sec:mqtt} wird beschrieben, dass auf dem Roboter in der Vergangenheit bereits einiges über \acrshort{mqtt} lief. Dies bildet die zentrale Komponente in der neuen Architektur. Es gäbe auch andere Event-Busse die dafür verwendet werden könnte. \acrshort{mqtt} ist aber bereits weit verbreitet und somit gibt es bereits Libraries und eine Community dafür. Es sollen Micro-Services entstehen, die nur genau eine Aufgabe erfüllen. Nämlich das hardware-spezifische Protokoll zwischen Hardware (hier \acrshort{lidar}) und der \acrshort{mqtt}-Welt zu adaptieren. \Glspl{service} kennen sich untereinander nicht, sie wissen nichts von der Verfügbarkeit anderer \glspl{service}. Um die einzelnen \Glspl{service}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth]{img/architecture/highlevel.png}
+	\caption{Architektur in Domains}
+	\label{fig:architecture_highlevel}
+\end{figure}
+
+
+\section{Aufbau eines Services, Begriffe}
+Jeder Service im System soll sich an in diesem Abschnitt beschriebenen Grundsatz halten. Die Basis dazu liefert das ab dem sechsten Semester kennengelernte Muster mit Intent,Status und Event für die MQTT Topics. Die Library ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway} von Reto Koenig implementiert dies bereits so. Die MQTT Topics stellen das \acrshort{api} für den jeweiligen Service dar und liefert bzw. konsumiert eine Dokumentstruktur mit \acrshort{yaml}-Inhalt. Die nachfolgenden Teilabschnitte basieren demzufolge auf dem englischen README von Github\cite{ch.quantasy.mqtt.gateway}. In Abbildung \ref{fig:gatewayclient} ist ersichtlich welche Basis-Topics bzw. \acrshort{api}s in Richtung MQTT-Broker zur Verfügung stellt.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth]{img/ch.quantasy.mqtt.gateway/MqttGatewayClient.png}
+    \caption{GatewayClient, ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway}}
+    \label{fig:gatewayclient}
+\end{figure}
+
+
+
+\subsection{Unit}
+Als \gls{unit} wir eine Instanz eines Services oder generell eines GatewayClients bezeichnet. Im Hardware-Service für den \acrshort{lidar}-Sensor wird pro konfigurierter Sensor eine Instanz des GatewayClients erstellt. Das sind also unterschiedliche Units.
+\subsection{Intent}
+Kann ein Service Befehle über die API auf der Seite von \acrshort{mqtt} entgegennehmen, so werden diese über das \gls{intent}-Topic dem Service mitgeteilt. Pro Service gibt es nur in Intent-Topic.
+\subsection{Status}
+Mehrheitlich statische Informationen stellt ein Service unter dem \gls{status}-Basis-Topic zur Verfügung. Unter diesem Basis-Topic kann eine beliebige Baumstruktur aufgebaut werden.
+\subsection{Event}
+TODO
+\subsection{Description}
+TODO
+
 
 \chapter{Anhang}
 \pagenumbering{roman}
 \section{Selbstständigkeitserklärung}
 \section{Anderes}
-Foobar\cite{foobar}
-\gls{consoleServant}
 
 % Abbildungsverzeichnis
 \listoffigures
 
 % Glossar
-\newglossaryentry{consoleServant}{name={ConsoleUIServant},description={test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test }}
+\newglossaryentry{unit}{
+	name={Unit},
+	description={eine Instanz eines Services},
+	plural={Units}
+}
+\newglossaryentry{intent}{
+	name={Intent},
+	description={Befehls-Topic eines Services, zum Absetzen von Steuerungsbefehlen an den Service},
+	plural={Intents}
+}
+\newglossaryentry{status}{
+	name={Status},
+	description={Status-Topic eines Services, beispielsweise für Zustände und statische Informationen},
+	plural={Stati}
+}
+\newglossaryentry{event}{
+	name={Event},
+	description={Event-Topic eines Services, beispielsweise für Messwerte},
+	plural={Events}
+}
+\newglossaryentry{description}{
+	name={Description},
+	description={Description-Topic eines Services, für API-Dokumentation},
+}
+\newglossaryentry{service}{
+	name={Service},
+	description={},
+	plural={Services}
+}
+\newglossaryentry{servant}{
+	name={Servant},
+	description={},
+	plural={Servants}
+}
+
+
 
 % Abkürzungen
+\newacronym{api}   {API}   {Application Programming Interface, Programmierschnittstelle}
 \newacronym{bfh}   {BFH}   {Berner Fachhochschule}
 \newacronym{hftm}  {HFTM}  {Höhere Fachschule für Technik Mittelland}
 \newacronym{lidar} {Lidar} {light detection and ranging}
 \newacronym{mqtt}  {MQTT}  {Message Queuing Telemetry Transport}
+\newacronym{yaml}  {YAML}  {YAML Ain’t Markup Language}
 
 % Glossar ausgeben
 \printglossary[title=Glossar]
@@ -182,7 +256,8 @@ Foobar\cite{foobar}
 \printglossary[type=\acronymtype, title=Abkürzungsverzeichnis]
 
 \begin{thebibliography}{1}
-	\bibitem{foobar} \url{http://foo/bar} 1.1.1970
+	\bibitem{ch.quantasy.mqtt.gateway} \url{https://github.com/knr1/ch.quantasy.mqtt.gateway} 5.4.2018
+
 \end{thebibliography}
 
 
