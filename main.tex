@@ -17,7 +17,7 @@
 \usepackage{fancyhdr}
 \usepackage{amsthm}
 \usepackage{mathtools}
-\usepackage[xindy]{glossaries}
+\usepackage[toc, acronym]{glossaries}
 \usepackage{lastpage}
 \usepackage{float}
 \usepackage{makecell}
@@ -35,7 +35,7 @@
 \hypersetup{pdfborder = 0 0 0}
 
 % Glossary
-\makeglossaries	
+\makeglossaries
 
 \setcounter{secnumdepth}{2}
 \setcounter{tocdepth}{1}
@@ -64,8 +64,8 @@ Berner Fachhochschule | Haute école spécialisée bernoise | Bern University of
 \begin{tabular}{ll}
 	Studiengang:  & Informatik, berufsbegleitend \\
 	Autor:        & Marco Kilchhofer \\
-	Betreuer:     & Dr. Reto Koenig\\
-	Auftraggeber: & Dr. Reto Koenig, BFH / Alain Rohr, HFTM\\
+	Betreuer:     & Dr. Reto Koenig, \acrshort{bfh}\\
+	Auftraggeber: & Dr. Reto Koenig, \acrshort{bfh} / Alain Rohr, \acrshort{hftm}\\
 	Experten:     & Dr. Joachim Wolfgang Kaltz\\
 	Datum:        & \today\\
 \end{tabular}
@@ -107,7 +107,7 @@ Bei dieser Arbeit gilt es auch zu beachten, dass die Software-Fähigkeiten des j
 
 \bigskip
 TODO:
-konkrete Aufgabenstellung, was soll raus kommen -> Howto für Studenten der \gls{HFTM}
+konkrete Aufgabenstellung, was soll raus kommen -> Howto für Studenten der \acrshort{hftm}
 
 \section{HFTM Robocup}
 TODO:
@@ -115,7 +115,7 @@ Roboter erklären, Schule erklären, Studienrichtung?
 
 \section{Lidar}
 TODO:
-was ist \gls{LIDAR}, wozu wird es verwendet, Funktionsweise High-Level
+was ist \acrshort{lidar}, wozu wird es verwendet, Funktionsweise High-Level
 
 
 
@@ -139,41 +139,38 @@ TODO
 \section{Git}
 TODO
 \section{MQTT}
-TODO - Stichworte: \gls{MQTT}, Broker, Client, publish, subscribe
+TODO - Stichworte: \acrshort{mqtt}, Broker, Client, publish, subscribe
+
 \chapter{Software Design}
 In diesem Kapitel wird ein mögliches Design für den Robocup erläutert.
 \section{Einführung}
-
-
-
+Stichworte: Microservice vs Monolith, gemeinsamer Event-Bus
 \section{Aufbau eines Services}
 
-
-
 \chapter{Anhang}
-%\pagenumbering{roman}
+\pagenumbering{roman}
 \section{Selbstständigkeitserklärung}
 \section{Anderes}
 Foobar\cite{foobar}
+\gls{consoleServant}
 
-
-
-
+% Abbildungsverzeichnis
 \listoffigures
 
-
 % Glossar
-\newglossaryentry{LIDAR}{name={LIDAR},description={light detection and ranging}}
-\newglossaryentry{MQTT}{name={mqtt},description={messsage queueing}}
+\newglossaryentry{consoleServant}{name={ConsoleUIServant},description={test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test }}
 
 % Abkürzungen
-\newacronym{hftm}{HFTM}{Höhere Fachschule für Technik Mittelland}
-\newacronym{bfh}{BFH}{Berner Fachhochschule}
+\newacronym{bfh}   {BFH}   {Berner Fachhochschule}
+\newacronym{hftm}  {HFTM}  {Höhere Fachschule für Technik Mittelland}
+\newacronym{lidar} {Lidar} {light detection and ranging}
+\newacronym{mqtt}  {MQTT}  {Message Queuing Telemetry Transport}
 
-
-%Print the glossary
-\printglossaries
+% Glossar ausgeben
 \printglossary[title=Glossar]
+
+% Abkuerzungen ausgeben
+\printglossary[type=\acronymtype, title=Abkürzungsverzeichnis]
 
 \begin{thebibliography}{1}
 	\bibitem{foobar} \url{http://foo/bar} 1.1.1970
