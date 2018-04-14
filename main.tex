@@ -35,7 +35,7 @@ backend=biber,
 style=alphabetic,
 sorting=ynt
 ]{biblatex}
-\addbibresource{references/references.bib}
+\addbibresource{datenbanken/references.bib}
 
 \usepackage{titlesec}
 \assignpagestyle{\chapter}{fancy}
@@ -89,221 +89,35 @@ sorting=ynt
 \setcounter{tocdepth}{1}
 
 \begin{document}
+\input{variables}
 
-\begin{titlepage}
-\pagenumbering{Alph}
-\begin{center}
-	
-\includegraphics[width=0.08\textwidth]{img/logo/bfh_logo.png}
-
-Berner Fachhochschule | Haute école spécialisée bernoise | Bern University of Applied Sciences
-\vspace{20mm}
-
-\newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
-\HRule \\[0.4cm]
-{\huge LIDAR Einbindung für den Robocup}\\[0.3cm]
-{\huge \bfseries  }
-\HRule \\[2cm]
-
-
-% Author und Dozent
-\vfill
-\end{center}
-\begin{tabular}{ll}
-	Studiengang:  & Informatik, berufsbegleitend \\
-	Autor:        & Marco Kilchhofer \\
-	Betreuer:     & Dr. Reto Koenig, \acrshort{bfh}\\
-	Auftraggeber: & Dr. Reto Koenig, \acrshort{bfh} / Alain Rohr, \acrshort{hftm}\\
-	Experte:      & Dr. Joachim Wolfgang Kaltz\\
-	Datum:        & \today\\
-\end{tabular}
-
-\end{titlepage}
-
+% Titelseite
+\include{vorspann/titelseite}
 \pagenumbering{Roman}
+
+% Vorspann
+\include{vorspann/management_summary}
 
 % Inhaltsverzeichnis
 \tableofcontents
 
-\chapter*{Management Summary}
+% Content
+\include{kapitel/einleitung}
+\include{kapitel/voraussetzungen}
+\include{kapitel/software-design}
 
-
-\chapter*{Motivation}
-
-
-
-\chapter{Einleitung}
-\pagenumbering{arabic}
-\section{Aufgabenstellung}
-Seit mehreren Jahren bestreitet die \acrshort{hftm} unter der Leitung von Alain Rohr mit dem Solidus Team erfolgreich die internationalen Meisterschaften des RoboCups in der 'Logistics League'.
-Das Team kennt sich meisterlich mit der Ansteuerung der Hardware aus, bittet aber die \acrshort{bfh} um Mithilfe beim Software-Engineering.
-Die Aufgabe dieser Arbeit ist es, ein Software-Design für die einzelnen Komponenten des verwendeten Roboters zu entwerfen. Angelehnt an die Vorgehensweise 'Domain Driven Design' soll konkret anhand des \acrshort{lidar}s gezeigt werden, wie das erarbeitete Software-Design implementiert und genutzt werden soll. Folgende Merkmale soll das Design mindestens aufweisen:
-
-\begin{itemize}
-	\item
-	Die Schnittstelle der einzelnen Domänen muss Programmiersprachen-agnostisch sein
-	
-	\item
-	Die Domänen müssen abgekapselt und unabhängig entwickelt und getestet werden können
-	
-	\item
-	Das Design muss klar vorsehen, dass jedes Jahr das Entwicklungsteam komplett ausgetauscht wird
-\end{itemize}
-Bei dieser Arbeit gilt es auch zu beachten, dass die Software-Fähigkeiten des jeweiligen Entwicklungsteams erst noch ausgebildet werden müssen, es also nötig ist, die Schnittstellen so leicht und verständlich wie möglich zu halten, um nicht eine zu steile Lernkurve als Voraussetzung zu erschaffen.
-
-
-\bigskip
-TODO:
-konkrete Aufgabenstellung, was soll raus kommen -> Howto für Studenten der \acrshort{hftm}
-
-\section{HFTM Robocup}
-TODO:
-Roboter erklären, Schule erklären, Studienrichtung?
-
-\section{Lidar}
-TODO:
-was ist \acrshort{lidar}, wozu wird es verwendet, Funktionsweise High-Level
-
-
-
-\section{Vorarbeiten}
-Diese Bachelorarbeit basiert nicht auf einer Projekt2-Arbeit. Die ganze Arbeit entsteht also während einem Semester.
-
-\section{Rahmenbedingungen}
-Die Rahmenbedingungen dieses Projektes wurden gemeinsam mit dem Betreuer definiert:
-\begin{itemize}
-\item Source-Code für \acrshort{lidar}-Ansteuerung von \acrshort{hftm}, verwenden als Library
-\item Library ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway} von Reto Koenig als Schnittstelle zwischen Hardware, User und Event-Bus
-\end{itemize}
-
-
-\chapter{Voraussetzungen}
-\section{Maven Projekt}
-TODO
-\section{Tests / Unit Tests}
-TODO
-\section{Git}
-TODO
-\section{MQTT}
-\label{sec:mqtt}
-TODO - Stichworte: \acrshort{mqtt}, Broker, Client, publish, subscribe
-
-\chapter{Software Design}
-In diesem Kapitel wird ein mögliches Design für den Robocup erläutert.
-\section{Einführung}
-Bis anhin hat die \acrshort{hftm} mit dem Team Solidus am Robocup durchaus erfolgreich mitgespielt. So fragt man sich vielleicht, wieso diese Arbeit überhaupt zu Stande kommt. Bis heute entwickelt man mit einem monolithischen Ansatz. Vieles ist eng miteinander verzahnt und die Software lässt sich schwer und mit viel Zeit warten. Der Roboter für den Wettbewerb wird gleichzeitig aber ständig komplexer und es müssen immer wieder neue Dinge (Bsp. Sensoren) integriert werden. Auch müssen sich die Schüler jedes Jahr durchgehend mit allen Schichten (von Hardware bis Business-Logik) neu befassen. In den nachfolgenden Abschnitten soll gezeigt werden, wie man einzelne Funktionen in Domänen unterteilt und dazwischen simple und nachhaltigere Schnittstellen (\acrshort{api}) realisieren kann.
-
-
-
-\bigskip
-TODO
-Stichworte: Microservice vs Monolith, gemeinsamer Event-Bus
-
-\section{Architektur}
-Im Kapitel \ref{sec:mqtt} wird beschrieben, dass auf dem Roboter in der Vergangenheit bereits einiges über \acrshort{mqtt} lief. Dies bildet die zentrale Komponente in der neuen Architektur. Es gäbe auch andere Event-Busse, die dafür verwendet werden könnte (Bsp. \acrshort{ros}). \acrshort{mqtt} ist aber bereits weit verbreitet und somit gibt es bereits Libraries und eine Community dafür, aber vor allem kennen die Studenten der HFTM dies bereits. Es sollen Micro-Services entstehen, die nur genau eine Aufgabe erfüllen. Nämlich das hardware-spezifische Protokoll zwischen Hardware (hier \acrshort{lidar}) und der \acrshort{mqtt}-Welt zu adaptieren. \Glspl{service} kennen sich untereinander nicht, sie wissen nichts von der Existenz anderer \glspl{service}. Damit die einzelnen \Glspl{service} miteinander kommunizieren können, kommen so genannte \Glspl{servant} zum Einsatz. Diese kennen die Schnittstellen-"\gls{contract}" (\acrshort{api}) der zu bedienenden Services. Wir werden dieses Konzept in den nachfolgenden Kapitel am Beispiel des \acrshort{lidar} anschauen.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.6\textwidth]{img/architecture/highlevel.png}
-	\caption{Architektur in Domains}
-	\label{fig:architecture_highlevel}
-\end{figure}
-
-
-\section{Aufbau eines Services, Begriffe}
-Jeder Service im System soll sich an in diesem Abschnitt beschriebenen Grundsatz halten. Die Basis dazu liefert das ab dem sechsten Semester kennengelernte Muster mit Intent,Status und Event für die MQTT Topics. Die Library ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway} von Reto Koenig implementiert dies bereits so. Die \acrshort{mqtt}-Topics stellen das \acrshort{api} für den jeweiligen Service dar und liefert bzw. konsumiert eine Dokumentstruktur mit \acrshort{yaml}-Inhalt. Die nachfolgenden Teilabschnitte basieren demzufolge auf dem englischen README von Github\cite{ch.quantasy.mqtt.gateway}. In Abbildung \ref{fig:gatewayclient} ist ersichtlich welche Basis-Topics bzw. \acrshort{api}s in Richtung MQTT-Broker zur Verfügung stellt.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.6\textwidth]{img/ch.quantasy.mqtt.gateway/MqttGatewayClient.png}
-    \caption{GatewayClient, ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway}}
-    \label{fig:gatewayclient}
-\end{figure}
-
-
-
-\subsection{Unit}
-Als \gls{unit} wir eine Instanz eines Services oder generell eines GatewayClients bezeichnet. Im Hardware-Service für den \acrshort{lidar}-Sensor wird pro konfigurierter Sensor eine Instanz des GatewayClients erstellt. Das sind also unterschiedliche Units.
-\subsection{Intent}
-Kann ein Service Befehle über die \acrshort{api} auf der Seite von \acrshort{mqtt} entgegennehmen, so werden diese über das Topic '\gls{intent}' dem Service mitgeteilt. Pro Service gibt es nur ein Intent-Topic.
-\subsection{Status}
-Mehrheitlich statische Informationen stellt ein Service unter dem Basis-Topic '\gls{status}' zur Verfügung. Unter diesem Topic kann eine beliebige Baumstruktur aufgebaut werden.
-\subsection{Event}
-TODO
-\subsection{Description}
-Im Topic '\gls{description}' beschreibt ein Service bzw. eine \acrshort{unit} beim Aufstarten bzw. beim instantiieren des GatewayClient das angebotene \acrshort{api}. Das ermöglicht für Entwickler die Anbindung an andere Komponenten, ohne auf deren Seite die Programmiersprache Java mit der Library ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway} zu verwenden.
-
-\section{API Java Servicelogik}
-
-TODO
-Beispiels-Listing:
-\lstinputlisting[language=Java]{listings/scanner-listener.java}
-
-
-\chapter{Anhang}
-\pagenumbering{roman}
-\section{Selbstständigkeitserklärung}
-\section{Anderes}
+% Anhang
+\include{anhang/anhang}
 
 % Abbildungsverzeichnis
 \listoffigures
 
-% Glossar
-\newglossaryentry{unit}{
-	name={Unit},
-	description={eine Instanz eines Services},
-	plural={Units}
-}
-\newglossaryentry{intent}{
-	name={Intent},
-	description={Befehls-Topic eines Services, zum Absetzen von Steuerungsbefehlen an den Service},
-	plural={Intents}
-}
-\newglossaryentry{status}{
-	name={Status},
-	description={Status-Topic eines Services, beispielsweise für Zustände und statische Informationen},
-	plural={Stati}
-}
-\newglossaryentry{event}{
-	name={Event},
-	description={Event-Topic eines Services, beispielsweise für Messwerte},
-	plural={Events}
-}
-\newglossaryentry{description}{
-	name={Description},
-	description={Description-Topic eines Services, für API-Dokumentation},
-}
-\newglossaryentry{service}{
-	name={Service},
-	description={},
-	plural={Services}
-}
-\newglossaryentry{servant}{
-	name={Servant},
-	description={},
-	plural={Servants}
-}
-\newglossaryentry{contract}{
-	name={Contract},
-	description={Die Vereinbarung / der Vertrag der Schnittstelle zwischen Services und Servants.},
-	plural={contracts}
-}
-
-
-
-% Abkürzungen
-\newacronym{api}   {API}   {Application Programming Interface, Programmierschnittstelle}
-\newacronym{bfh}   {BFH}   {Berner Fachhochschule}
-\newacronym{hftm}  {HFTM}  {Höhere Fachschule für Technik Mittelland}
-\newacronym{lidar} {Lidar} {light detection and ranging}
-\newacronym{mqtt}  {MQTT}  {Message Queuing Telemetry Transport}
-\newacronym{yaml}  {YAML}  {YAML Ain’t Markup Language}
-\newacronym{ros}   {ROS}   {Robot Operating System}
-
 % Glossar ausgeben
+\include{datenbanken/glossary}
 \printglossary[title=Glossar]
 
 % Abkuerzungen ausgeben
+\include{datenbanken/abbreviations}
 \printglossary[type=\acronymtype, title=Abkürzungsverzeichnis]
 
 % Literatur
