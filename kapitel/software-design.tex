@@ -1,16 +1,36 @@
 \chapter{Software Design}
 In diesem Kapitel wird ein mögliches Design für den Robocup erläutert.
 \section{Einführung}
-Bis anhin hat die \acrshort{hftm} mit dem Team Solidus am Robocup durchaus erfolgreich mitgespielt. So fragt man sich vielleicht, wieso diese Arbeit überhaupt zu Stande kommt. Bis heute entwickelt man mit einem monolithischen Ansatz. Vieles ist eng miteinander verzahnt und die Software lässt sich schwer und mit viel Zeit warten. Der Roboter für den Wettbewerb wird gleichzeitig aber ständig komplexer und es müssen immer wieder neue Dinge (Bsp. Sensoren) integriert werden. Auch müssen sich die Schüler jedes Jahr durchgehend mit allen Schichten (von Hardware bis Business-Logik) neu befassen. In den nachfolgenden Abschnitten soll gezeigt werden, wie man einzelne Funktionen in Domänen unterteilt und dazwischen simple und nachhaltigere Schnittstellen (\acrshort{api}) realisieren kann.
+Bis anhin hat die \acrshort{hftm} mit dem Team Solidus am Robocup bereits an der Spitze mitgespielt. So fragt man sich vielleicht, wieso diese Arbeit überhaupt zu Stande kommt. Bis heute entwickelt man mit einem monolithischen Ansatz. Das Meiste ist eng miteinander verzahnt und die Software lässt sich schwer und mit viel Zeit weiterentwickeln. Der Roboter für den Wettbewerb wird gleichzeitig aber ständig komplexer und es müssen immer wieder neue Dinge (Bsp. Sensoren) integriert werden. Auch müssen sich die Schüler jedes Jahr durchgehend mit allen Schichten bzw. Teilen (von Hardware bis Business-Logik) neu befassen. In den nachfolgenden Abschnitten soll gezeigt werden, wie man die einzelnen Systeme des Roboters in Domänen (Positionierung, Fahr-Einheit, Greifsystem, etc.) unterteilt und dazwischen simple und nachhaltigere Schnittstellen realisieren kann.
+Jede einzelne Komponente im System verwendet zum Austausch mit Anderen den Systemweiten Event-Bus, egal zu welcher Domain sie gehört.
 
+\section{Monolith vs. Microservice}
+Man hört es heute an jedem Enwickler-Event, liest es in verschiedenen Zeitschriften, egal ob für Entwickler oder System-Administratoren: der Weg zum Ziel sollen Microservices sein, sie sollen Monolithen ablösen. Viele kleine Services statt einen grossen, verzahnten und schwierig wartbaren Moloch.
+In \cite{informatik-aktuell-microservices} findet sich ein passendes Statement zur monolithischen Applikation:
+\begin{quote}
+	Selbstverständlich startet keine Neuentwicklung als ,,grosser Monolith". Anfangs ist die Anwendung schlank, leicht zu erweitern und gut zu verstehen – die Architektur adressiert die Probleme, die das Team zu dieser Zeit hat. Im Laufe der Monate entsteht mehr und mehr Code. Es werden Schichten definiert, Abstraktionen gefunden, Module, Services und Frameworks eingeführt, um die wachsende Komplexität in den Griff zu bekommen.
+	
+	Bereits bei mittelgrossen Anwendungen (etwa eine Java-Anwendung mit mehr als 50.000 LOC\footnote{Lines of Code}) werden monolithische Architekturen langsam unangenehm. Das gilt vor allem für Anwendungen, die hohe Anforderungen an die Skalierbarkeit stellen. Aus der schlanken Neuentwicklung entwickelt sich das nächste Legacy-System, über das folgende Generationen von Entwicklern fluchen werden.
+\end{quote}
+Die Vorteile von Microservices sprechen für sich. Hier ein Auszug der wichtigsten Punke aus der selben Quelle\cite{informatik-aktuell-microservices}, die für den Roboter interessant sind:
+\begin{itemize}
+	\item
+Aufgrund ihrer geringen Grösse benötigt man wenig Boiler-Plate Code und keine schwergewichtigen Frameworks.
+	\item
+Sie lassen sich unabhängig voneinander deployen. Continuous Delivery bzw. Deployment lässt sich damit sehr viel einfacher realisieren.
+	\item
+Die Architektur unterstützt die Arbeit in mehreren, unabhängigen Teams.
+	\item
+Es ist pro Service möglich, die jeweils „beste“ Programmiersprache zu wählen. Man kann ohne grosses Risiko auch mal eine neue Sprache, ein neues Framework oder ähnliches ausprobieren. Man sollte es dabei nur nicht übertreiben.
+	\item
+Da sie klein sind, lassen sie sich auch jederzeit mit vertretbarem Aufwand durch eine Neuentwicklung ablösen.
+	\item
+Microservices kommen der agilen Entwicklung entgegen. Ein neues Feature, von dessen Erfolg beim Kunden man noch nicht überzeugt ist, lässt sich nicht nur schnell entwickeln – es lässt sich auch schnell wieder wegwerfen.
+\end{itemize}
 
-
-\bigskip
-TODO
-Stichworte: Microservice vs Monolith, gemeinsamer Event-Bus
 
 \section{Architektur}
-Im Kapitel \ref{sec:mqtt} wird beschrieben, dass auf dem Roboter in der Vergangenheit bereits einiges über \acrshort{mqtt} lief. Dies bildet die zentrale Komponente in der neuen Architektur. Es gäbe auch andere Event-Busse, die dafür verwendet werden könnte (Bsp. \acrshort{ros}). \acrshort{mqtt} ist aber bereits weit verbreitet und somit gibt es bereits Libraries und eine Community dafür, aber vor allem kennen die Studenten der HFTM dies bereits. Es sollen Micro-Services entstehen, die nur genau eine Aufgabe erfüllen. Nämlich das hardware-spezifische Protokoll zwischen Hardware (hier \acrshort{lidar}) und der \acrshort{mqtt}-Welt zu adaptieren. \Glspl{service} kennen sich untereinander nicht, sie wissen nichts von der Existenz anderer \glspl{service}. Damit die einzelnen \Glspl{service} miteinander kommunizieren können, kommen so genannte \Glspl{servant} zum Einsatz. Diese kennen die Schnittstellen-"\gls{contract}" (\acrshort{api}) der zu bedienenden Services. Wir werden dieses Konzept in den nachfolgenden Kapitel am Beispiel des \acrshort{lidar} anschauen.
+Im Kapitel \ref{sec:mqtt} wird beschrieben, dass auf dem Roboter bis jetzt bereits einiges über den Event-Bus \acrshort{mqtt} kommuniziert. Dies bildet auch die zentrale Komponente in der neuen Architektur. Es gäbe auch andere Event-Busse, die dafür verwendet werden könnte (Bsp. \acrshort{ros}). \acrshort{mqtt} ist beispielsweise durch die Verwendung in Heimautomationen bereits weit verbreitet und es gibt bereits Libraries für unterschiedliche Programmiersprachen und eine grosse Community dafür, aber vor allem kennen die Studenten der HFTM dies bereits. Es sollen Micro-Services entstehen, die nur genau eine Aufgabe erfüllen. Nämlich das hardware-spezifische Protokoll zwischen Hardware (hier \acrshort{lidar}) und der \acrshort{mqtt}-Welt zu adaptieren. \Glspl{service} kennen sich untereinander nicht, sie wissen nichts von der Existenz anderer \glspl{service}. Damit die einzelnen \Glspl{service} miteinander kommunizieren können, kommen so genannte \Glspl{servant} zum Einsatz. Diese kennen die Schnittstellen (\gls{contract}/\acrshort{api}) der zu bedienenden Services. Wir werden dieses Konzept in den nachfolgenden Kapitel am Beispiel des \acrshort{lidar} anschauen.
 
 \begin{figure}[H]
 	\centering
@@ -20,8 +40,11 @@ Im Kapitel \ref{sec:mqtt} wird beschrieben, dass auf dem Roboter in der Vergange
 \end{figure}
 
 
+
+
+
 \section{Aufbau eines Services, Begriffe}
-Jeder Service im System soll sich an in diesem Abschnitt beschriebenen Grundsatz halten. Die Basis dazu liefert das ab dem sechsten Semester kennengelernte Muster mit Intent,Status und Event für die MQTT Topics. Die Library ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway} von Reto Koenig implementiert dies bereits so. Die \acrshort{mqtt}-Topics stellen das \acrshort{api} für den jeweiligen Service dar und liefert bzw. konsumiert eine Dokumentstruktur mit \acrshort{yaml}-Inhalt. Die nachfolgenden Teilabschnitte basieren demzufolge auf dem englischen README von Github\cite{ch.quantasy.mqtt.gateway}. In Abbildung \ref{fig:gatewayclient} ist ersichtlich welche Basis-Topics bzw. \acrshort{api}s in Richtung MQTT-Broker zur Verfügung stellt.
+Jeder Service im System soll sich an in diesem Abschnitt beschriebenen Grundsatz halten. Die Basis dazu liefert das ab dem sechsten Semester kennengelernte Muster mit Intent, Status und Event für die MQTT Topics. Die Java-Library ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway} von Reto Koenig implementiert dies bereits so. Die \acrshort{mqtt}-Topics stellen das \acrshort{api} für den jeweiligen Service dar und liefert bzw. konsumiert eine Dokumentstruktur mit \acrshort{yaml}-Inhalt. Die nachfolgenden Teilabschnitte basieren demzufolge auf dem englischen README von Github\cite{ch.quantasy.mqtt.gateway}. In Abbildung \ref{fig:gatewayclient} ist ersichtlich welche Basis-Topics bzw. \acrshort{api}s in Richtung MQTT-Broker zur Verfügung stellt.
 
 \begin{figure}[H]
 	\centering
@@ -41,10 +64,10 @@ Mehrheitlich statische Informationen stellt ein Service unter dem Basis-Topic '\
 \subsection{Event}
 TODO
 \subsection{Description}
-Im Topic '\gls{description}' beschreibt ein Service bzw. eine \acrshort{unit} beim Aufstarten bzw. beim instantiieren des GatewayClient das angebotene \acrshort{api}. Das ermöglicht für Entwickler die Anbindung an andere Komponenten, ohne auf deren Seite die Programmiersprache Java mit der Library ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway} zu verwenden.
+Im Topic '\gls{description}' beschreibt ein Service bzw. eine \acrshort{unit} beim Aufstarten bzw. beim Instanziieren des GatewayClient das angebotene \acrshort{api}. Das ermöglicht für Entwickler die Anbindung an andere Komponenten, ohne auf deren Seite die Programmiersprache Java mit der Library ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway} zu verwenden.
 
 \section{API Java Servicelogik}
 
 TODO
-Beispiels-Listing:
-\lstinputlisting[language=Java]{listings/scanner-listener.java}
+
+\lstinputlisting[caption={Ein kleines Programm in Java},language=Java,captionpos=b]{listings/scanner-listener.java}
