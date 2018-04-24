@@ -1,0 +1,46 @@
+\chapter{Implementation der Beispielservices für den Lidar}
+\section{Die Library 'GatewayClient'}
+Mit der  Java-Library \verb|ch.quantasy.mqtt.gateway| von Reto Koenig\cite{ch.quantasy.mqtt.gateway} lässt sich einfach ein Microservice entwickeln, der sich bereits an das Muster aus Kapitel \ref{sec:isePattern} hält. Man kann damit keine Messages ins MQTT publizieren die das Muster verletzen. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth]{img/ch.quantasy.mqtt.gateway/GatewayClient.png}
+	\caption{GatewayClient, ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway}}
+	\label{fig:gatewayclient}
+\end{figure}
+In Abbildung \ref{fig:gatewayclient} ist ersichtlich wie die Library die Basis-Topics bzw. \acrshort{api}s in Richtung MQTT-Broker zur Verfügung stellt. Die Idee hinter dem \verb|GatewayClient| ist folgende:
+\begin{itemize}
+	\item
+	Standardisieren der Schnittstelle. Man wird zwar ,,eingeengt'' aber dafür ist die Schnittstelle einheitlich.
+	\item
+	Serialisierung/Übertragen der Java-Objekte auf MQTT (bei den published Topics)
+	\item
+	Deserialisierung der YAML-Daten in die ursprünglichen Java-Objekte (bei den subscribed Topics)
+\end{itemize}
+\subsection{Service Logik}
+An den GatewayClient wird die eigentliche Service Logik angebunden. Im Github-README unterscheidet Reto Koenig\cite{ch.quantasy.mqtt.gateway} dabei noch in 'Service Logic' und 'Service Source'. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth]{img/ch.quantasy.mqtt.gateway/MicroService.png}
+	\caption{GatewayClient, ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway}}
+	\label{fig:microService}
+\end{figure}
+\subsubsection{Service Source}
+In 'Service Source' gehören die Libraries zu einer bestimmten Hardware. Der Hersteller Tinkerforge\cite{tinkerforge-gmbh} stellt beispielsweise den Java-Code und die Library für die Anbindung ihrer Produkte bereit.
+\subsubsection{Service Logic}
+Unter 'Service Logic' versteht man die eigentliche Logik um einen Sensor/Aktor/etc. an den \verb|GatewayClient| anzubinden.
+
+
+\section{Lidar-Adapter}
+Der Lidar-Adapter-Service enthält (dh. \verb|import|) zum einen den GatewayClient  und die Library der HFTM zur Dekodierung und Ansteuerung des Lidars.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth]{img/ch.quantasy.mqtt.gateway/LidarService.png}
+	\caption{LidarService, Quelle des Templates: \cite{ch.quantasy.mqtt.gateway}}
+	\label{fig:lidarservice}
+\end{figure}
+
+\section{TODO}
+
+TODO
+
+\lstinputlisting[caption={Ein kleines Programm in Java},language=Java,captionpos=b]{listings/scanner-listener.java}

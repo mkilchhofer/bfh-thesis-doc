@@ -180,7 +180,7 @@
 \patchcmd{\@fancyfoot}{\rlap}{\color{bfhgrey}\rlap}{}{}		% new color of footer
 \makeatother
 
-\fancyhf{}																		% clean all fields
+\fancyhf{}																	% clean all fields
 \fancypagestyle{plain}{				% new definition of plain style	
 	\fancyfoot[OR,EL]{\footnotesize \thepage} 	% footer right part --> page number
 	\fancyfoot[OL,ER]{\footnotesize \titel, Version \versionnumber, \versiondate}	% footer even page left part 
@@ -199,8 +199,8 @@
 %\include{vorspann/titelseite_ohne_bild}	% activate for Titelseite ohne Bild
 \include{vorspann/titelseite_mit_bild}		% activate for Titelseite mit Bild
 %\include{vorspann/versionen}
-\cleardoubleemptypage
-\setcounter{page}{1}
+%\cleardoubleemptypage
+%\setcounter{page}{1}
 %\cleardoublepage
 %\phantomsection 
 \addcontentsline{toc}{chapter}{Management Summary}
@@ -216,11 +216,12 @@
 
 % Main part:
 %---------------------------------------------------------------------------
-\pagenumbering{arabic}
-
 \include{kapitel/einleitung}
+\include{vorspann/projektmanagement}
+%\pagenumbering{arabic}
 \include{kapitel/voraussetzungen}
 \include{kapitel/software-design}
+\include{kapitel/beispiel-implementation}
 \include{kapitel/ausblick}
 
 %---------------------------------------------------------------------------
