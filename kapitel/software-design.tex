@@ -12,29 +12,33 @@ In \cite{informatik-aktuell-microservices} findet sich ein passendes Statement z
 	
 	Bereits bei mittelgrossen Anwendungen (etwa eine Java-Anwendung mit mehr als 50.000 LOC\footnote{Lines of Code}) werden monolithische Architekturen langsam unangenehm. Das gilt vor allem für Anwendungen, die hohe Anforderungen an die Skalierbarkeit stellen. Aus der schlanken Neuentwicklung entwickelt sich das nächste Legacy-System, über das folgende Generationen von Entwicklern fluchen werden.
 \end{quote}
+\subsection{Vorteile von Microservices}
 Die Vorteile von Microservices sprechen für sich. Deshalb setzen auch die Internetriesen wie Netflix, Amazon, eBay und Uber seit einiger Zeit darauf. Hier ein Auszug der wichtigsten Punke aus der selben Quelle\cite{informatik-aktuell-microservices}, die für den Roboter interessant sind:
-\begin{itemize}
-	\item
-Aufgrund ihrer geringen Grösse benötigt man wenig Boiler-Plate Code und keine schwergewichtigen Frameworks.
-	\item
-Sie lassen sich unabhängig voneinander deployen. Continuous Delivery bzw. Deployment lässt sich damit sehr viel einfacher realisieren.
-	\item
-Die Architektur unterstützt die Arbeit in mehreren, unabhängigen Teams.
-	\item
-Es ist pro Service möglich, die jeweils „beste“ Programmiersprache zu wählen. Man kann ohne grosses Risiko auch mal eine neue Sprache, ein neues Framework oder ähnliches ausprobieren. Man sollte es dabei nur nicht übertreiben.
-	\item
-Da sie klein sind, lassen sie sich auch jederzeit mit vertretbarem Aufwand durch eine Neuentwicklung ablösen.
-	\item
-Microservices kommen der agilen Entwicklung entgegen. Ein neues Feature, von dessen Erfolg beim Kunden man noch nicht überzeugt ist, lässt sich nicht nur schnell entwickeln – es lässt sich auch schnell wieder wegwerfen.
-\end{itemize}
-Folgendes Argument kommt noch dazu: Durch die Tatsache, dass die Schnittstellen klar definiert sind, lassen sich an einem Service jederzeit einfache Blackbox-Tests durchführen: Man versorgt den Service an der Schnittstelle mit den Testdaten und prüft, ob die richtigen Daten raus kommen. Diesen Punkt werden wir später in diesem Dokument anhand des Lidar-Services anschauen.
+\begin{quote}
+	\begin{itemize}
+		\item
+		Aufgrund ihrer geringen Grösse benötigt man wenig Boiler-Plate Code und keine schwergewichtigen Frameworks.
+		\item
+		Sie lassen sich unabhängig voneinander deployen. Continuous Delivery bzw. Deployment lässt sich damit sehr viel einfacher realisieren.
+		\item
+		Die Architektur unterstützt die Arbeit in mehreren, unabhängigen Teams.
+		\item
+		Es ist pro Service möglich, die jeweils „beste“ Programmiersprache zu wählen. Man kann ohne grosses Risiko auch mal eine neue Sprache, ein neues Framework oder ähnliches ausprobieren. Man sollte es dabei nur nicht übertreiben.
+		\item
+		Da sie klein sind, lassen sie sich auch jederzeit mit vertretbarem Aufwand durch eine Neuentwicklung ablösen.
+		\item
+		Microservices kommen der agilen Entwicklung entgegen. Ein neues Feature, von dessen Erfolg beim Kunden man noch nicht überzeugt ist, lässt sich nicht nur schnell entwickeln – es lässt sich auch schnell wieder wegwerfen.
+	\end{itemize}
+\end{quote}
 
+Folgendes Argument kommt noch dazu: Durch die Tatsache, dass die Schnittstellen klar definiert sind, lassen sich an einem Service jederzeit einfache Blackbox-Tests durchführen: Man versorgt den Service an der Schnittstelle mit den Testdaten und prüft, ob die richtigen Daten raus kommen. Diesen Punkt werden wir später in diesem Dokument anhand des Lidar-Services anschauen.
+\subsection{Nachteile von Microservices}
 Natürlich gibt es mit Microservices auch Nachteile, die man nicht verschweigen sollte:
 \begin{itemize}
 	\item
-	Durch die Kapselung in einzelne Komponenten (und sogar eigene Java VMs) braucht es  grundsätzlich mehr Ressourcen.
+	Durch die Kapselung in einzelne Komponenten (und sogar eigene Java VMs) braucht es  grundsätzlich mehr Ressourcen. Vor allem in Bezug auf Memory und Netzwerkverkehr.
 	\item
-	Es entsteht mehr Netzwerk Traffic. Objekte werden in einer YAML-/JSON-/(XML)-Struktur serialisiert übers Netzwerk versendet. Der Consumer-Service muss diese dann wieder in Objekte "abfüllen" (marshalling/unmarshalling).
+	Objekte werden in einer YAML-/JSON-/(XML)-Struktur serialisiert übers Netzwerk versendet. Der Consumer-Service muss diese dann wieder in Objekte ,,abfüllen'' (marshalling/unmarshalling). Dieses Serialisieren und Deserialisieren ist ziemlich ,,teuer'' was die CPU Performance anbelangt.
 	
 \end{itemize}
 
@@ -44,7 +48,7 @@ Im Kapitel \ref{sec:mqtt} wird beschrieben, dass auf dem Roboter bis jetzt berei
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.6\textwidth]{img/architecture/highlevel.png}
+	\includegraphics[width=\textwidth]{img/architecture/highlevel.png}
 	\caption{Architektur in Domains}
 	\label{fig:architecture_highlevel}
 \end{figure}
@@ -52,20 +56,22 @@ Im Kapitel \ref{sec:mqtt} wird beschrieben, dass auf dem Roboter bis jetzt berei
 Der ,,Datenfluss'' der Lidar-Sensordaten bis zur Drive-Einheit (Motoransteuerung etc.) könnte somit beispielsweise wie folgt aussehen:
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.6\textwidth]{img/architecture/dataflow.png}
+	\includegraphics[width=0.9\textwidth]{img/architecture/dataflow.png}
 	\caption{Datenfluss Sensordaten zur Drive-Einheit}
 	\label{fig:architecture_dataflow}
 \end{figure}
-Die einzelnen Services werden durch die jeweiligen Servants verbunden.
+Die einzelnen Services werden durch die jeweiligen Servants verbunden. Ein Servant kann mehrere Services ,,verbinden'' dafür gibt es keine Regel. Das Beispiel in Abbildung \ref{fig:architecture_dataflow} zeigt wie ein Servant die Daten des Lidar-Adapter-Services mit Daten eines anderen Services (Bsp. Daten eines Gyroskop\footnote{auch bekannt als Kreiselinstrument} für die Referenz der Lidar-Messpunkte)  kombiniert und an den Linien-Finder-Service weitergibt.
 
 
 \section{Aufbau eines Services, Begriffe}
 \label{sec:isePattern}
 Jeder Service im System soll sich an in diesem Abschnitt beschriebenen Grundsatz halten. Als Student der BFH mit Mobile Computing als Schwerpunkt lernt man bei Reto Koenig folgendes Muster für die MQTT-Topics kennen: Intent, Status und Event. Was das bedeutet wird in den nächsten Abschnitten beschrieben. Die \acrshort{mqtt}-Topics stellen das \acrshort{api} für den jeweiligen Service dar.
+
+Die nachfolgenden Teilabschnitte basieren auf dem englischen README aus dem Github-Projekt von Reto Koenig \cite{ch.quantasy.mqtt.gateway}.
 \subsection{Payload}
-In der Payload der Topics befinden sich nicht nur Werte (wie bisher) sondern eine Dokumentstruktur mit \acrshort{yaml}-Inhalt. YAML deshalb, damit man mit einem MQTT-Client (z.B. MQTTlens oder MQTTfx) für den Mensch verständlich ist. Jede Payload enthält mindestens einen Zeitstempel mit der Systemzeit als die Meldung ins MQTT-System eingespiesen wurde. Der Zeitstempel wird beim ,,durchschleifen'' einer Nachricht von Service zu Service vom Servant nicht verändert. Die nachfolgenden Teilabschnitte basieren auf dem englischen README aus dem Github-Projekt \verb|ch.quantasy.mqtt.gateway|\cite{ch.quantasy.mqtt.gateway}.
-\subsubsection{Beispiel einer MQTT-Payload}
-\begin{lstlisting}
+In der Payload der Topics befinden sich nicht nur Werte (wie bisher) sondern eine Dokumentstruktur mit \acrshort{yaml}-Inhalt (siehe Listing \ref{lst:examplePayload}). YAML deshalb, damit man mit einem MQTT-Client (z.B. MQTTlens\cite{mqtt-lens} oder MQTTfx\cite{mqttfx}) für den Mensch verständlich ist. Jede Payload enthält mindestens einen Zeitstempel mit der Systemzeit als die Meldung ins MQTT-System eingespiesen wurde. Der Zeitstempel wird beim ,,durchschleifen'' einer Nachricht von Service zu Service vom Servant nicht verändert. 
+
+\begin{lstlisting}[caption={Beispiel einer MQTT-Payload}, label={lst:examplePayload}]
 ---
 - timeStamp: 65630678285913
 command: "SINGLE_MEAS"

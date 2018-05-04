@@ -1,10 +1,27 @@
 \chapter{Voraussetzungen}
+Die \acrshort{hftm} stellte dem Betreuer in einem eigenen Git-Repository den Sourcecode bereit. Dieser habe ich anschliessend als Zip-Datei erhalten. Während dieser Arbeit (am 16. April) habe ich lesenden Zugriff auf das Git-Repository der \acrshort{hftm} erhalten\cite{gitlab.com/solidus/hefei}. Dabei ist aufgefallen, dass beide Repos Projekt-Files der \acrshort{ide} und weitere Daten, die gegen den Home-Pfad des Commiters zeigen, beinhaltet. Auch sind Log-Dateien und Abhängigkeiten (jar-Dateien) im Git des Projekts eingecheckt:
+\begin{lstlisting}[caption={Listing der Daten im Git-Repository 'gitlab.com/solidus/hefei'},language=Bash, columns=fixed]
+$ du -sch .[!.]* *
+17M	.git
+4.0K	.gitignore
+4.0K	build.xml
+24K	config
+17M	lib
+107M	logs
+4.0K	manifest.mf
+100K	nbCodeConvJava.zip
+152K	nbproject
+4.0K	README.md
+3.1M	src
+143M	total
+\end{lstlisting}
+Dieses Kapitel soll oberflächlich einige Dinge erklären, die für diese Arbeit vorausgesetzt werden.
 \section{Maven Projekt}
-TODO
+TODO: Maven kurz erklären, libs gehören nicht als *.jar ins Git
 \section{Tests / Unit Tests}
 TODO
 \section{Git}
-TODO
+TODO: weshalb, was gehört eingecheckt, was nicht
 \section{MQTT}
 \label{sec:mqtt}
 TODO - Stichworte: \acrshort{mqtt}, Broker, Client, publish, subscribe

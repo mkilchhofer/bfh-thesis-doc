@@ -1,6 +1,6 @@
 \chapter{Projektmanagement}
 \section{Vorarbeiten}
-Diese Bachelorarbeit basiert nicht auf einer Projekt2-Arbeit. Die ganze Arbeit entsteht also während einem Semester.
+Diese Bachelorarbeit basiert nicht auf einer Projekt2-Arbeit. Die Bachelorarbeit entsteht also während einem Semester.
 
 \section{Aufgabenstellung}
 \label{sec:aufgabenstellung-messbar}
@@ -15,9 +15,27 @@ Die Rahmenbedingungen dieses Projektes wurden gemeinsam mit dem Betreuer definie
 \end{itemize}
 
 \section{Projektplan und Meilensteine}
+TODO
+\subsection{fixe Termine}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lll} \toprule
+		\textbf{Datum} 			& \textbf{Termin Beschreibung}		& \textbf{Bemerkungen}		\\ \midrule
+		Fr., 01.06.2018, 12:00		& Poster für Ausstellung 		& E-Mail an Heinz.Kipfer@bfh.ch	\\ \midrule
+		Mo., 04.06.2018 		& Book - Freigabe Inhalte		& https://students.book.bfh.ch	\\ \midrule
+		Mo., 11.06.2018 		& Book - Freigabe Layout		& https://students.book.bfh.ch	\\ \midrule
+		Do., 14.06.2018, 20:00		& Abgabe Bericht			&  				\\ \midrule
+		Fr., 15.06.2018, 10:40 - 10:55	& Präsentation Arbeit (Finaltag)	&  				\\ \midrule
+		Fr., 22.06.2018			& Abgabe Film				& hochladen in Moodle		\\ \midrule
+		Mi., 27.06.2018, 10:00 - 12:00	& Verteidigung				&				\\ \bottomrule
+	\end{tabular}
+	\caption{fixe Termine während der Bachelorarbeit}
+	\label{tab:fixeTermine}
+\end{table}
+
 
 \section{Meetings}
-Grundsätzlich mit Dozent alle zwei Wochen
+Mit dem Betreuer wurden zu Beginn dieser Arbeit die Meetings auf jede zweite Woche festgelegt. Bei Bedarf können Meetings auch Adhoc stattfinden.
 \subsection{Protokolle}
 \subsubsection{Startvorlesung mit Herr Anrig (Mo., 19.02.2018)}
 \begin{itemize}
@@ -30,9 +48,9 @@ Grundsätzlich mit Dozent alle zwei Wochen
 
 \subsubsection{Treffen mit Reto (Fr., 23.02.2018)}
 \begin{itemize}
-	\item Code für Java-GUI Software erhalten (Zip, Mail)
-	\item Pushed auf https://gitlab.ti.bfh.ch/kilcm1/hftm-lidar
-	\item Einführung in die Github Repos von knr1 (Reto) -> https://github.com/knr1?tab=repositories
+	\item Code für Java-GUI Software erhalten (Zip, Mail) -> Pushed auf https://gitlab.ti.bfh.ch/kilcm1/hftm-lidar
+	\item Einführung in die Github Repos von knr1 (Reto Koenig) -> https://github.com/knr1?tab=repositories
+	\item Festlegung der Treffen: alle zwei Wochen in Biel
 \end{itemize}
 Ziele: Lernbuch für HFTM (entweder in Doku integriert oder extern)
 
@@ -40,9 +58,9 @@ Ziele: Lernbuch für HFTM (entweder in Doku integriert oder extern)
 \subsubsection{Treffen mit Reto (Do., 08.03.2018)}
 Erste Schritte mit dem GatewayClient gezeigt (LidarService). Weitere Schritte:
 \begin{itemize}
-	\item Servant und kleiner UI-Service (console writer)
-	\item danach dokumentieren
-	\item expert termin vorschlag (Dr. Joachim Wolfgang Kaltz)
+	\item Servant und kleiner UI-Service (console writer) implementieren
+	\item Danach Dokumentieren der ersten Erkenntnisse
+	\item Vorschlag für Treffen mit Experten (Dr. Joachim Wolfgang Kaltz)
 \end{itemize}
 \subsubsection{Treffen mit Experte (Mo., 19.03.2018)}
 \begin{itemize}
@@ -53,16 +71,33 @@ Erste Schritte mit dem GatewayClient gezeigt (LidarService). Weitere Schritte:
 Weitere Schritte: Weiteres Meeting mit Experte, Alain und Reto Mitte Mai.
 \subsubsection{Treffen mit Reto (Do., 22.03.2018)}
 nächste Schritte: Doku
-\subsubsection{Treffen mit Reto und Alain (Do., 05.04.2018)}
-abgesagt da Reto Krank -> verschoben auf Fr., 13.04.2018, 09:00
+
 \subsubsection{Treffen mit Reto und Alain (Do., 13.04.2018)}
 \begin{itemize}
-	\item Sourcecode vom Robi erhalten
-	\item Niveau ist nicht sehr hoch, darf die Studenten nicht gleich überfordern. Java wird in 34 Lektionen vor dem Arbeiten am Robocup erst ausgebildet
+	\item Zugriff auf aktuellen Sourcecode vom Roboter erhalten (auf gitlab.com \cite{gitlab.com/solidus/hefei})
+	\item Niveau ist nicht sehr hoch, darf die Studenten nicht gleich überfordern. Java wird in 34 Lektionen vor dem Arbeiten am Robocup erst ausgebildet. Vorher haben die Meisten noch nie objektorientiert programmiert.
 	\item Robi hat Intel i5-Basierter PC drauf (also doch kein Raspi) = ebenbürdig mit meinem Lenovo Yoga 2 Pro
 \end{itemize}
+
+\subsubsection{Treffen mit Reto (Do., 26.04.2018)}
+\begin{itemize}
+	\item Alternativen mit "Kein Gluelayer"/Servant innerhalb einer Domain ansprechen, aber weiter wie bisher: zwischen jedem Service gibt es den Servant.
+	\item Wenn es im Servant zu Ressourcen-Problemen kommt, verwenden wir eine andere Struktur als YAML/JSON (Bsp. Google's Protocol buffers)
+	\item nächste Schritte: Doku, Linien-Finder anschauen, Testing
+\end{itemize}
+
+\subsubsection{Treffen mit Reto (Do., 03.05.2018)}
+\begin{itemize}
+	\item Idee Services über Reference zusammenhängen, ohne die Daten durch den Servant zu schleusen, wenn kompatibel. Der Servant würde den entsprechenden Services das mitteilen.
+	\item Zerreissen der "Library" für EdgeDetection, da Refactoring notwendig (Bsp. Naming der Koordinatensysteme Polar und Kartesisch)
+\end{itemize}
+
+\subsection{abgesagte Meetings}
+\subsubsection{Treffen mit Reto und Alain (Do., 05.04.2018)}
+abgesagt da Reto krank -> verschoben auf Fr., 13.04.2018, 09:00
+
 \subsubsection{Treffen mit Reto (Do., 19.04.2018)}
-abgesagt (Reto krank)
+abgesagt da Reto krank -> verschoben auf Do., 26.04.2018, 15:30
 
 \section{Journal}
 TODO: Bild vom Excel einfügen am Schluss

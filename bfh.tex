@@ -42,7 +42,7 @@
 %---------------------------------------------------------------------------
 \usepackage[
 	backend=biber,
-	style=alphabetic,
+	style=numeric,
 	sorting=ynt
 ]{biblatex}
 \addbibresource{datenbanken/references.bib}
@@ -87,7 +87,8 @@
 \lstset{
 	basicstyle=\small\ttfamily,
 	language=Java,
-%	numberstyle=\numold,
+	captionpos=b,
+	numberstyle=\tiny,
 	numbers=left,
 	columns=fullflexible,
 	frame=lines,
@@ -217,12 +218,13 @@
 % Main part:
 %---------------------------------------------------------------------------
 \include{kapitel/einleitung}
-\include{vorspann/projektmanagement}
 %\pagenumbering{arabic}
 \include{kapitel/voraussetzungen}
 \include{kapitel/software-design}
 \include{kapitel/beispiel-implementation}
+\include{kapitel/probleme}
 \include{kapitel/ausblick}
+\include{vorspann/projektmanagement}
 
 %---------------------------------------------------------------------------
 
