@@ -17,18 +17,35 @@ Bei dieser Arbeit gilt es auch zu beachten, dass die Software-Fähigkeiten des j
 Im Kapitel \ref{sec:aufgabenstellung-messbar} wird die Messbare Aufgabenstellung (TODO) erläutert.
 
 \section{HFTM Robocup}
-\begin{figure}[htbp]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.5\textwidth]{img/robocup/robotino_v3.jpg}
-	\caption{Robotino v3 für die Logistics League\cite{robotino}}  
+	\caption{Robotino v3 für die Logistics League\cite{robotino}}
+	\label{fig:robotino}
 \end{figure}
 
 TODO:
 Roboter erklären, Schule erklären, Studienrichtung?
 
 \section{Lidar}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{img/lidar/lidar-coordinate.png}
+\caption{\acrshort{lidar}-Koordinatensystem}
+\label{fig:lidar}
+\end{figure}
+
+Beschreibung nach Datenblatt vom Hersteller Sick\cite{tim55x-techinfo}:
+\begin{quote}
+Der TiM5xx sendet mit einer Laserdiode gepulste Laserstrahlen aus. Trifft ein solcher Laserpuls auf ein Objekt oder eine Person, wird er an dessen Oberfläche reflektiert. Die Reflexion wird im Empfänger des TiM5xx von einer Fotodiode registriert. Der TiM5xx nutzt die SICK-eigene HDDM-Technologie (High Definition Distance Measurement). Bei diesem Messverfahren wird ein Messwert durch die Mittelwertbildung mehrerer Einzelpulse gebildet. Aus der Laufzeit, die das Licht von der Aussendung des Strahls bis zum Empfang der Reflexion benötigt, berechnet der TiM5xx die Entfernung zum Objekt. Dieses Prinzip der ,,Pulslaufzeitmessung'' wird in ähnlicher Form von Radarsystemen benutzt.
+
+Mit einem rotierenden Spiegel lenkt der TiM5xx die ausgesendeten Laserstrahlen ab und tastet damit die Umgebung radial ab. Die Messungen werden intern von einem Winkelkodierer in regelmässigen Winkelschritten ausgelöst. Eine komplette Rotation stellt einen Messvorgang (Scan) dar. Der TiM5xx arbeitet mit einer Scanfrequenz von 15 Hz, d. h. er durchläuft 15 Messvorgänge pro Sekunde und stellt die Messergebnisse fortlaufend in Echtzeit über die Ethernet-Schnittstelle zur Verfügung.
+\end{quote}
+
 TODO:
 was ist \acrshort{lidar}, wozu wird es verwendet, Funktionsweise High-Level
+
 
 
 

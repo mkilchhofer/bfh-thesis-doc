@@ -1,4 +1,5 @@
 \chapter{Implementation der Beispielservices für den Lidar}
+\label{chap:beispielimplementation}
 \section{Die Library 'GatewayClient'}
 Mit der  Java-Library \verb|ch.quantasy.mqtt.gateway| von Reto Koenig\cite{ch.quantasy.mqtt.gateway} lässt sich einfach ein Microservice entwickeln, der sich bereits an das Muster aus Kapitel \ref{sec:isePattern} hält. Man kann damit keine Messages ins MQTT publizieren die das Muster verletzen. 
 \begin{figure}[H]
@@ -48,10 +49,12 @@ Der Adapter-Service ist wie in Abbildung \ref{fig:structure_lidarservice} strukt
 	\label{fig:structure_lidarservice}
 \end{figure}
 
-Beginnen wir nun mit der Implementation. Als erstes wird der \Gls{contract} - also die MQTT-Topics und die Struktur der \Gls{payload} - definiert. Dazu wird die Basis-Klasse \verb|AyamlServiceContract| wie in Listing \ref{lst:lidarservice-contracts} ersichtlich erweitert.
+Beginnen wir nun mit der Implementation. Der Programmcode in den nachfolgenden Abschnitten ist meist nicht vollständig, damit es übersichtlich bleibt (mit '\verb|// ...|' gekennzeichnet). Der vollständige Code dieser Arbeit befindet sich auf Github\cite{github-thesis}. \\
+Als erstes wird der \Gls{contract} - also die MQTT-Topics und die Struktur der \Gls{payload} - definiert. Dazu wird die Basis-Klasse \verb|AyamlServiceContract| wie in Listing \ref{lst:lidarservice-contracts} ersichtlich erweitert.
 \begin{lstlisting}[caption={Lidar-Adapter - Contracts},label={lst:lidarservice-contracts}]
 public class LidarServiceContract extends AyamlServiceContract {
     public final String STATE, MEASUREMENT, STATUS_STATE, EVENT_MEASUREMENT;
+    // ...
 
     public LidarServiceContract(String instanceID) {
         super("Robocup", "Lidar", instanceID);
@@ -81,7 +84,7 @@ und durch Vererbung:
 \end{itemize}
 , wobei über den Aufruf \verb|super(rootContext: "Robocup", baseClass: "Lidar", instanceID)| die variablen Teile der \Glspl{topic} entsprechend gesetzt werden.
 
-Schauen wir uns als Beispiel noch das 'measurement'-Topic an. Eine Momentaufnahme des \acrshort{lidar} also ein Mess-Event beinhaltet 270 Messpunkte mit dieser Struktur:
+Schauen wir uns als Beispiel noch das 'measurement'-Topic an. Eine Momentaufnahme des \acrshort{lidar}-Sensors also eine Messung beinhaltet 270 Messpunkte mit dieser Struktur:
 \begin{lstlisting}[caption={Lidar-Adapter - Struktur der Messpunkte},label={lst:lidar_measurement}]
 public class Measurement {
 	public int id, angle, distance, rssi;
@@ -92,10 +95,10 @@ public class Measurement {
 		this.distance = distance;
 		this.rssi = rssi;
 	}
-	// ... (not complete)
+	// ...
 }
 \end{lstlisting}
-Diese Messpunkte werden dann in einer Liste als 'LidarMeasurementEvent' übermittelt:
+Diese Messpunkte einer Messung werden in einer Liste als 'LidarMeasurementEvent' übermittelt:
 \begin{lstlisting}[caption={Lidar-Adapter - Struktur des 'LidarMeasurementEvent'},label={lst:lidar_measurementevent}]
 public class LidarMeasurementEvent extends AnEvent{
 	private ArrayList<Measurement> measurements;
@@ -103,7 +106,7 @@ public class LidarMeasurementEvent extends AnEvent{
 	public LidarMeasurementEvent(ArrayList<Measurement> measurements) {
 		this.measurements = measurements;
 	}
-	// ... (not complete)
+	// ...
 }
 \end{lstlisting}
 

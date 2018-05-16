@@ -1,5 +1,5 @@
 \chapter{Voraussetzungen}
-Die \acrshort{hftm} stellte dem Betreuer in einem eigenen Git-Repository den Sourcecode bereit. Dieser habe ich anschliessend als Zip-Datei erhalten. Während dieser Arbeit (am 16. April) habe ich lesenden Zugriff auf das Git-Repository der \acrshort{hftm} erhalten\cite{gitlab.com/solidus/hefei}. Dabei ist aufgefallen, dass beide Repos Projekt-Files der \acrshort{ide} und weitere Daten, die gegen den Home-Pfad des Commiters zeigen, beinhaltet. Auch sind Log-Dateien und Abhängigkeiten (jar-Dateien) im Git des Projekts eingecheckt:
+Die \acrshort{hftm} stellte dem Betreuer in einem eigenen Git-Repository den Sourcecode bereit. Diesen habe ich anschliessend als Zip-Datei via E-Mail erhalten. Während dieser Arbeit (am 16. April) habe ich lesenden Zugriff auf das Git-Repository der \acrshort{hftm} erhalten\cite{gitlab.com/solidus/hefei}. Dabei ist aufgefallen, dass beide Code-Repos Projekt-Files der \acrshort{ide} und weitere Daten, die gegen den Home-Pfad des Commiters zeigen, beinhaltet. Auch sind Log-Dateien und Abhängigkeiten (jar-Dateien) im Git des Projekts eingecheckt:
 \begin{lstlisting}[caption={Listing der Daten im Git-Repository 'gitlab.com/solidus/hefei'},language=Bash, columns=fixed]
 $ du -sch .[!.]* *
 17M	.git
@@ -17,6 +17,31 @@ $ du -sch .[!.]* *
 \end{lstlisting}
 Dieses Kapitel soll oberflächlich einige Dinge erklären, die für diese Arbeit vorausgesetzt werden.
 \section{Maven Projekt}
+Maven ist ein Tool um den Build-Prozess von Software zu unterstützen. Es bietet beispielsweise Unterstützung fürs Managen der Abhängigkeiten, fürs Testing und zur Paketierung. Die zu entwickelnden Services aus Kapitel \ref{chap:beispielimplementation} verwenden Maven vor allem für das Dependency-Management.
+
+Maven ist in diesem Projekt für folgendes zuständig:
+\begin{itemize}
+	\item
+	Libraries werden nicht erneut als binäres Jar-File ins Git/\acrshort{vcs}\footnote{Version Control System} hochgeladen. Der Sourcecode einer Library soll nur im \acrshort{vcs} der jeweiligen Entwickler sein.
+	\item
+	Versionen der Libraries werden Zentral definiert. Ein Upgrade einer Library auf eine neue Version lässt sich somit an einem Ort erledigen.
+	\item
+	Paketierung der Services/Applikationen als Jar-File.
+\end{itemize}
+Um Maven zu verwendet erstellt man in der verwendeten Entwicklungsumgebung (\acrshort{ide}) ein Maven Projekt. Zentral in einem Maven-Projekt ist die Datei \verb|pom.xml| (\acrshort{pom} steht für \acrlong{pom}). Sie definiert wie oben erläutert die Umgebung für das Java-Projekt.
+
+Dependencies/Libraries sucht man beispielsweise auf \verb|mvnrepository.com|. Alle Libaries in diesem Repository kennt Maven automatisch und kann diese herunterladen. Dafür fügt man im \verb|pom.xml| als Beispiel für ,,log4j'' folgendes ein:
+\begin{lstlisting}[language=XML]
+<dependencies>
+	<dependency>
+		<groupId>org.apache.logging.log4j</groupId>
+		<artifactId>log4j-core</artifactId>
+		<version>2.11.0</version>
+	</dependency>
+</dependencies>
+\end{lstlisting}
+Maven übernimmt dann über die \acrshort{ide} den Rest und lädt das Jar und nötigenfalls die Sources an die erfoderlichen Orte herunter.
+
 TODO: Maven kurz erklären, libs gehören nicht als *.jar ins Git
 \section{Tests / Unit Tests}
 TODO
