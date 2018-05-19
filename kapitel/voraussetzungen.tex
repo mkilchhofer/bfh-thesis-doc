@@ -1,25 +1,11 @@
 \chapter{Voraussetzungen}
-Die \acrshort{hftm} stellte dem Betreuer in einem eigenen Git-Repository den Sourcecode bereit. Diesen habe ich anschliessend als Zip-Datei via E-Mail erhalten. Während dieser Arbeit (am 16. April) habe ich lesenden Zugriff auf das Git-Repository der \acrshort{hftm} erhalten\cite{gitlab.com/solidus/hefei}. Dabei ist aufgefallen, dass beide Code-Repos Projekt-Files der \acrshort{ide} und weitere Daten, die gegen den Home-Pfad des Commiters zeigen, beinhaltet. Auch sind Log-Dateien und Abhängigkeiten (jar-Dateien) im Git des Projekts eingecheckt:
-\begin{lstlisting}[caption={Listing der Daten im Git-Repository 'gitlab.com/solidus/hefei'},language=Bash, columns=fixed]
-$ du -sch .[!.]* *
-17M	.git
-4.0K	.gitignore
-4.0K	build.xml
-24K	config
-17M	lib
-107M	logs
-4.0K	manifest.mf
-100K	nbCodeConvJava.zip
-152K	nbproject
-4.0K	README.md
-3.1M	src
-143M	total
-\end{lstlisting}
+\label{chap:voraussetzungen}
 Dieses Kapitel soll oberflächlich einige Dinge erklären, die für diese Arbeit vorausgesetzt werden.
 \section{Maven Projekt}
-Maven ist ein Tool um den Build-Prozess von Software zu unterstützen. Es bietet beispielsweise Unterstützung fürs Managen der Abhängigkeiten, fürs Testing und zur Paketierung. Die zu entwickelnden Services aus Kapitel \ref{chap:beispielimplementation} verwenden Maven vor allem für das Dependency-Management.
+\label{chap:maven}
+Maven ist ein Tool um den Build-Prozess von Software zu unterstützen. Es bietet beispielsweise Unterstützung fürs Managen der Abhängigkeiten, fürs Testing und zur Paketierung.
 
-Maven ist in diesem Projekt für folgendes zuständig:
+Die zu entwickelnden Services aus Kapitel \ref{chap:beispielimplementation} verwenden Maven vor allem für das Dependency-Management. Konkret ist Maven in diesem Projekt für folgendes zuständig:
 \begin{itemize}
 	\item
 	Libraries werden nicht erneut als binäres Jar-File ins Git/\acrshort{vcs}\footnote{Version Control System} hochgeladen. Der Sourcecode einer Library soll nur im \acrshort{vcs} der jeweiligen Entwickler sein.

@@ -1,4 +1,5 @@
 \chapter{Software Design}
+\label{chap:software-design}
 In diesem Kapitel wird ein mögliches Design für den Robocup erläutert.
 \section{Einführung}
 Bis anhin hat die \acrshort{hftm} mit dem Team Solidus am Robocup bereits an der Spitze mitgespielt. So fragt man sich vielleicht, wieso diese Arbeit überhaupt zu Stande kommt. Bis heute entwickelt man mit einem monolithischen Ansatz. Das Meiste ist eng miteinander verzahnt und die Software lässt sich schwer und mit viel Zeit weiterentwickeln. Der Roboter für den Wettbewerb wird gleichzeitig aber ständig komplexer und es müssen immer wieder neue Dinge (Bsp. Sensoren) integriert werden. Auch müssen sich die Schüler jedes Jahr durchgehend mit allen Schichten bzw. Teilen (von Hardware bis Business-Logik) neu befassen. In den nachfolgenden Abschnitten soll gezeigt werden, wie man die einzelnen Systeme des Roboters in Domänen (Positionierung, Fahr-Einheit, Greifsystem, etc.) unterteilt und dazwischen simple und nachhaltigere Schnittstellen realisieren kann.
@@ -53,15 +54,7 @@ Im Kapitel \ref{sec:mqtt} wird beschrieben, dass auf dem Roboter bis jetzt berei
 	\label{fig:architecture_highlevel}
 \end{figure}
 
-Der ,,Datenfluss'' der Lidar-Sensordaten bis zur Drive-Einheit (Motoransteuerung etc.) könnte somit beispielsweise wie folgt aussehen:
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.9\textwidth]{img/architecture/dataflow.png}
-	\caption{Datenfluss Sensordaten zur Drive-Einheit}
-	\label{fig:architecture_dataflow}
-\end{figure}
-Die einzelnen Services werden durch die jeweiligen Servants verbunden. Ein Servant kann mehrere Services ,,verbinden'' dafür gibt es keine Regel. Das Beispiel in Abbildung \ref{fig:architecture_dataflow} zeigt wie ein Servant die Daten des Lidar-Adapter-Services mit Daten eines anderen Services (Bsp. Daten eines Gyroskop\footnote{auch bekannt als Kreiselinstrument} für die Referenz der Lidar-Messpunkte)  kombiniert und an den Linien-Finder-Service weitergibt.
-
+Die Abbildung \ref{fig:architecture_highlevel} zweigt wie die einzelnen Services  durch die Servants verbunden werden. Ein Servant kann mehrere Services ,,verbinden'' dafür gibt es keine Regel. Es gibt beispielsweise einen \Gls{servant}, der die gelieferten Daten vom TiM55x-Service konvertiert und dem EdgeDetection-Service gibt. Fürs UI könnten aber sowohl Daten vom TiM55x-Service als auch vom EdgeDetection-Service relevant sein. Dazu wird der Lidar-UI-Servant die Daten entsprechend zusammenführen und dem UI-Service übergeben. Der UI-Service dient hier nur als Beispiel. In der Praxis also für den Robocup werden diese Informationen vielleicht an einem Service mit Fahrlogik übergeben.
 
 \section{Aufbau eines Services, Begriffe}
 \label{sec:isePattern}

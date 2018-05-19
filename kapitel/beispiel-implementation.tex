@@ -1,4 +1,5 @@
 \chapter{Implementation der Beispielservices für den Lidar}
+Hier gehe ich darauf ein, wie sich das Konzept aus Kapitel \ref{chap:software-design} in Programmcode umsetzen lässt. Dabei versuche ich den Code so einfach wie möglich zu halten, da die Schüler der HFTM parallel erst an Java ausgebildet werden (siehe Anforderungen aus Abschnitt \ref{chap:aufgabenstellung}). Auf Lambda-Ausdrücke wird beispielsweise verzichtet.
 \label{chap:beispielimplementation}
 \section{Die Library 'GatewayClient'}
 Mit der  Java-Library \verb|ch.quantasy.mqtt.gateway| von Reto Koenig\cite{ch.quantasy.mqtt.gateway} lässt sich einfach ein Microservice entwickeln, der sich bereits an das Muster aus Kapitel \ref{sec:isePattern} hält. Man kann damit keine Messages ins MQTT publizieren die das Muster verletzen. 
@@ -16,6 +17,8 @@ In Abbildung \ref{fig:gatewayclient} ist ersichtlich wie die Library die Basis-T
 	Serialisierung und übertragen der Java-Objekte auf MQTT (bei den published Topics)
 	\item
 	Deserialisierung der YAML-Daten in die ursprünglichen Java-Objekte (bei den subscribed Topics)
+	\item
+	Bei jedem Verbinden zum MQTT-Broker publiziert der GatewayClient automatisch die ,,\acrshort{api}-Dokumentation''. So ist sofort ersichtlich was für eine Schnittstelle implementiert werden muss um einen weiteren \Gls{servant} an diese Schnittstelle anzuschliessen.
 \end{itemize}
 \subsection{Service Logik}
 An den GatewayClient wird die eigentliche Service Logik angebunden. Im Github-README unterscheidet Reto Koenig\cite{ch.quantasy.mqtt.gateway} dabei wie in Abbildung \ref{fig:microService} ersichtlich zwischen 'Service Logic' und 'Service Source':
@@ -29,29 +32,30 @@ Was das bedeutet, erklären die nächsten zwei nächsten Abschnitte.
 \subsubsection{Service Source}
 In 'Service Source' gehören die Libraries zu einer bestimmten Hardware. Der Hersteller Tinkerforge\cite{tinkerforge-gmbh} stellt beispielsweise den Java-Code und die Library für die Anbindung ihrer Produkte bereit. Diese Kategorie beinhaltet also die Ansteuerung der Hardware aus Java. Ab diesem Punkt haben wir also Objekte und Klassen, die wir mit der 'Service Logic' ansteuern können.
 \subsubsection{Service Logic}
-Unter 'Service Logic' versteht man die eigentliche (abstrahierte) Logik um einen Sensor/Aktor/etc. an den \verb|GatewayClient| anzubinden.
+Unter 'Service Logic' versteht man die eigentliche (abstrahierte) Logik um einen Sensor/Aktor/etc. an den GatewayClient anzubinden.
 
 
-\section{Lidar-Adapter}
-Der Lidar-Adapter-Service enthält (dh. \verb|import|) zum einen den GatewayClient sowie die Library der HFTM zur Dekodierung und Ansteuerung des Lidars (also der 'Service Source'). Wir müssen uns folglich also um die 'Service Logic' aus Abbildung \ref{fig:lidarservice} kümmern.
+\section{TiM55x-Service}
+Der TiM55x-Service enthält (dh. \verb|import|) zum einen den GatewayClient sowie die Library der HFTM zur Dekodierung und Ansteuerung des Lidars (also der 'Service Source'). Wir müssen uns folglich also um die 'Service Logic' aus Abbildung \ref{fig:lidarservice} kümmern.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.6\textwidth]{img/ch.quantasy.mqtt.gateway/LidarService.png}
-	\caption{Lidar-Adapter, Quelle des Diagramm-Templates: \cite{ch.quantasy.mqtt.gateway}}
+	\caption{TiM55x-Service, Quelle des Diagramm-Templates: \cite{ch.quantasy.mqtt.gateway}}
 	\label{fig:lidarservice}
 \end{figure}
 
-Der Adapter-Service ist wie in Abbildung \ref{fig:structure_lidarservice} strukturiert. Alles aus dem Java-Package 'contract' kennt auch der Consumer bzw. Provider von unserem Service, also der Servant - solange er auch den GatewayClient verwendet. Darin enthalten ist also die Definition der Schnittstelle und (Objekt-)Strukturen der Daten, die auf dem Event-Bus vorhanden sind.
+Der TiM55x-Service ist wie in Abbildung \ref{fig:structure_lidarservice} strukturiert. Alles aus dem Java-Package 'contract' kennt auch der Consumer bzw. Provider von unserem Service, also der Servant - solange er auch den GatewayClient verwendet. Darin enthalten ist also die Definition der Schnittstelle und (Objekt-)Strukturen der Daten, die auf dem Event-Bus vorhanden sind.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{img/implementation/lidar-adapter/structure.png}
-	\caption{Lidar-Adapter, Struktur}
+	\caption{TiM55x-Service, Struktur}
 	\label{fig:structure_lidarservice}
 \end{figure}
 
-Beginnen wir nun mit der Implementation. Der Programmcode in den nachfolgenden Abschnitten ist meist nicht vollständig, damit es übersichtlich bleibt (mit '\verb|// ...|' gekennzeichnet). Der vollständige Code dieser Arbeit befindet sich auf Github\cite{github-thesis}. \\
+Beginnen wir nun mit der Implementation. Der Programmcode in den nachfolgenden Abschnitten ist meist nicht vollständig, damit es übersichtlicher bleibt (mit '\verb|// ...|' gekennzeichnet). Der vollständige Code dieser Arbeit befindet sich auf Github\cite{github-thesis}. \\
+\subsection{Contracts definieren}
 Als erstes wird der \Gls{contract} - also die MQTT-Topics und die Struktur der \Gls{payload} - definiert. Dazu wird die Basis-Klasse \verb|AyamlServiceContract| wie in Listing \ref{lst:lidarservice-contracts} ersichtlich erweitert.
-\begin{lstlisting}[caption={Lidar-Adapter - Contracts},label={lst:lidarservice-contracts}]
+\begin{lstlisting}[caption={TiM55x-Service - Contracts},label={lst:lidarservice-contracts}]
 public class LidarServiceContract extends AyamlServiceContract {
     public final String STATE, MEASUREMENT, STATUS_STATE, EVENT_MEASUREMENT;
     // ...
@@ -72,7 +76,7 @@ public class LidarServiceContract extends AyamlServiceContract {
     }
 }
 \end{lstlisting}
-Der \acrshort{lidar}-Adapter verwendet also über diesen \Gls{contract} die folgenden \Glspl{topic}:
+Der \acrshort{lidar}-Service verwendet also über diesen \Gls{contract} die folgenden \Glspl{topic}:
 \begin{itemize}
 	\item \verb|<rootContext>/<baseClass>/U/<instanceID>/I|
 	\item \verb|<rootContext>/<baseClass>/U/<instanceID>/S/state|
@@ -84,13 +88,17 @@ und durch Vererbung:
 \end{itemize}
 , wobei über den Aufruf \verb|super(rootContext: "Robocup", baseClass: "Lidar", instanceID)| die variablen Teile der \Glspl{topic} entsprechend gesetzt werden.
 
-Schauen wir uns als Beispiel noch das 'measurement'-Topic an. Eine Momentaufnahme des \acrshort{lidar}-Sensors also eine Messung beinhaltet 270 Messpunkte mit dieser Struktur:
-\begin{lstlisting}[caption={Lidar-Adapter - Struktur der Messpunkte},label={lst:lidar_measurement}]
+Schauen wir uns als Beispiel noch das 'measurement'-\Gls{topic} an. Eine Momentaufnahme des \acrshort{lidar}-Sensors also eine Messung beinhaltet 270 Messpunkte mit dieser Struktur:
+\begin{lstlisting}[caption={TiM55x-Service - Struktur der Messpunkte},label={lst:lidar_measurement}]
 public class Measurement {
-	public int id, angle, distance, rssi;
+	@Range(from = -45, to = 225)
+	public int angle;
+	@Range(from = 0, to = 10000)
+	public int distance;
+	@Range(from = 0, to = 10000)
+	public int rssi;
 	
-	public Measurement(int id, int angle, int distance, int rssi){
-		this.id = id;
+	public Measurement(int angle, int distance, int rssi){
 		this.angle = angle;
 		this.distance = distance;
 		this.rssi = rssi;
@@ -99,7 +107,7 @@ public class Measurement {
 }
 \end{lstlisting}
 Diese Messpunkte einer Messung werden in einer Liste als 'LidarMeasurementEvent' übermittelt:
-\begin{lstlisting}[caption={Lidar-Adapter - Struktur des 'LidarMeasurementEvent'},label={lst:lidar_measurementevent}]
+\begin{lstlisting}[caption={TiM55x-Service - Struktur des 'LidarMeasurementEvent'},label={lst:lidar_measurementevent}]
 public class LidarMeasurementEvent extends AnEvent{
 	private ArrayList<Measurement> measurements;
 	
@@ -110,13 +118,14 @@ public class LidarMeasurementEvent extends AnEvent{
 }
 \end{lstlisting}
 
-Die nachfolgenden Code-Snippets aus Listing \ref{lst:lidar-adapter} zeigen den Aufbau des Lidar-Adapters.
-\lstinputlisting[caption={Aufbau Lidar-Adapter},language=Java,label={lst:lidar-adapter}]{listings/lidarservice.java}
+\subsection{Service Logik implementieren}
+Die nachfolgenden Code-Snippets aus Listing \ref{lst:TiM55x-service} zeigen den Aufbau des TiM55x-Service. Der GatewayClient wird über \verb|<LidarServiceContract>| mit dem \Gls{contract} instantiiert, damit er die Schnittstelle kennt. Bei den Zeilen mit \verb|IScanListener ... |, \verb|IScanOperator ...| sowie \verb|new TiM55x(...)| sieht man die Anbindung an die Sensor-Libary. Andersherum bei \verb|MessageReceiver| und \verb|gatewayClient.subscribe| die Anbindung mit dem GatewayClient an \acrshort{mqtt}. Der Code zeigt also schön, wie die 'Service Logic' beide ,,Welten'' zusammenklebt.
+\lstinputlisting[caption={Aufbau TiM55x-Service},language=Java,label={lst:TiM55x-service}]{listings/lidarservice_new.java}
 
 
-\section{Konsolen-Adapter}
+\section{UI-Service}
 
-\section{Konsolen-Servant}
+\section{TiM55x-zu-UI-Servant}
 
 \section{TODO}
 
