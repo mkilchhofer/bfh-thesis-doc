@@ -181,10 +181,12 @@
 \patchcmd{\@fancyfoot}{\rlap}{\color{bfhgrey}\rlap}{}{}		% new color of footer
 \makeatother
 
-\fancyhf{}																	% clean all fields
+\fancyhf{}						% clean all fields
 \fancypagestyle{plain}{				% new definition of plain style	
-	\fancyfoot[OR,EL]{\footnotesize \thepage} 	% footer right part --> page number
-	\fancyfoot[OL,ER]{\footnotesize \titel, Version \versionnumber, \versiondate}	% footer even page left part 
+%	\fancyfoot[OR,EL]{\footnotesize \thepage} 	% footer right part --> page number
+%	\fancyfoot[OL,ER]{\footnotesize \titel, Version \versionnumber, \versiondate}	% footer even page left part
+	\fancyfoot[R]{\footnotesize \thepage} 	% footer right part --> page number (single page)
+	\fancyfoot[L]{\footnotesize \titel, Version \versionnumber, \versiondate}	% footer even page left part (single page)
 }
 
 \renewcommand{\chaptermark}[1]{\markboth{\thechapter.  #1}{}}
