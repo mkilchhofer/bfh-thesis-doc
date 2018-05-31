@@ -78,43 +78,46 @@ public class LidarServiceContract extends AyamlServiceContract {
 \end{lstlisting}
 Der \acrshort{lidar}-Service verwendet also über diesen \Gls{contract} die folgenden \Glspl{topic}:
 \begin{itemize}
-	\item \verb|<rootContext>/<baseClass>/U/<instanceID>/I|
-	\item \verb|<rootContext>/<baseClass>/U/<instanceID>/S/state|
-	\item \verb|<rootContext>/<baseClass>/U/<instanceID>/E/measurement|
+	\item \path{<rootContext>/<baseClass>/U/<instanceID>/I}
+	\item \path{<rootContext>/<baseClass>/U/<instanceID>/S/state}
+	\item \path{<rootContext>/<baseClass>/U/<instanceID>/E/measurement}
 \end{itemize}
 und durch Vererbung:
 \begin{itemize}
-	\item \verb|<rootContext>/<baseClass>/U/<instanceID>/S/connection|
+	\item \path{<rootContext>/<baseClass>/U/<instanceID>/S/connection}
 \end{itemize}
 , wobei über den Aufruf \verb|super(rootContext: "Robocup", baseClass: "Lidar", instanceID)| die variablen Teile der \Glspl{topic} entsprechend gesetzt werden.
 
 Schauen wir uns als Beispiel noch das 'measurement'-\Gls{topic} an. Eine Momentaufnahme des \acrshort{lidar}-Sensors also eine Messung beinhaltet 270 Messpunkte mit dieser Struktur:
 \begin{lstlisting}[caption={TiM55x-Service - Struktur der Messpunkte},label={lst:lidar_measurement}]
 public class Measurement {
-	@Range(from = -45, to = 225)
-	public int angle;
-	@Range(from = 0, to = 10000)
-	public int distance;
-	@Range(from = 0, to = 10000)
-	public int rssi;
-	
-	public Measurement(int angle, int distance, int rssi){
-		this.angle = angle;
-		this.distance = distance;
-		this.rssi = rssi;
-	}
-	// ...
+    @Range(from = -45, to = 225)
+    public int angle;
+    
+    @Range(from = 0, to = 10000)
+    public int distance;
+    
+    @Range(from = 0, to = 10000)
+    public int rssi;
+
+    public Measurement(int angle, int distance, int rssi){
+        this.angle = angle;
+        this.distance = distance;
+        this.rssi = rssi;
+    }
+    // ...
 }
 \end{lstlisting}
-Diese Messpunkte einer Messung werden in einer Liste als 'LidarMeasurementEvent' übermittelt:
+Über die Annotations geben wir den Variablen die möglichen Werte vor. Damit werden zum einen beim Aufstarten die \Gls{description}-Topics korrekt abgefüllt und zum anderen lassen sich die Empfangenen Werte mit dem \Gls{gatewayclient} validieren (optional). So kann man beispielsweise bestimmen, ob nicht valide Werte weiterverarbeitet werden oder nicht.
+Die obigen Messpunkte einer Messung werden in einer Liste als 'LidarMeasurementEvent' übermittelt:
 \begin{lstlisting}[caption={TiM55x-Service - Struktur des 'LidarMeasurementEvent'},label={lst:lidar_measurementevent}]
 public class LidarMeasurementEvent extends AnEvent{
-	private ArrayList<Measurement> measurements;
-	
-	public LidarMeasurementEvent(ArrayList<Measurement> measurements) {
-		this.measurements = measurements;
-	}
-	// ...
+    private ArrayList<Measurement> measurements;
+    
+    public LidarMeasurementEvent(ArrayList<Measurement> measurements) {
+        this.measurements = measurements;
+    }
+    // ...
 }
 \end{lstlisting}
 
@@ -122,10 +125,100 @@ public class LidarMeasurementEvent extends AnEvent{
 Die nachfolgenden Code-Snippets aus Listing \ref{lst:TiM55x-service} zeigen den Aufbau des TiM55x-Service. Der GatewayClient wird über \verb|<LidarServiceContract>| mit dem \Gls{contract} instantiiert, damit er die Schnittstelle kennt. Bei den Zeilen mit \verb|IScanListener ... |, \verb|IScanOperator ...| sowie \verb|new TiM55x(...)| sieht man die Anbindung an die Sensor-Libary. Andersherum bei \verb|MessageReceiver| und \verb|gatewayClient.subscribe| die Anbindung mit dem GatewayClient an \acrshort{mqtt}. Der Code zeigt also schön, wie die 'Service Logic' beide ,,Welten'' zusammenklebt.
 \lstinputlisting[caption={Aufbau TiM55x-Service},language=Java,label={lst:TiM55x-service}]{listings/lidarservice_new.java}
 
+\subsection{Tests mit JUnit}
+Der TiM55x-Service verwendet als '\Gls{service-source}' die Library der HFTM. Theoretisch müsste hier also die '\Gls{service-logic}' per Unit-Test getestet werden. Ein einfacher Unittest ist aber ohne beiden Libraryies '\Gls{service-source}' und '\Gls{gatewayclient}' zu Mocken fast nicht möglich und auch nicht sehr aussagekräftig. Deshalb werden am Service lediglich Integrationstests mit JUnit durchgeführt.
+\subsubsection{Integrationstest initialisieren}
+Initialisiert wird das Setup wie folgt:
+\begin{lstlisting}[caption={Integrations-Test Setup für TiM55x},label={lst:integrationstest-tim55x-setup}]
+public class TiM55xServiceIntegrationTest {
+    // ..
+    static int LIDAR_PORT = 2112;
+    static String LIDAR_IP = "127.0.0.1";
+    static String MQTT_BROKER = "tcp://127.0.0.1:11234";
+    //.. 
+    @BeforeAll
+    public static void setUpBeforeClass() {
+        mqttURI = URI.create(MQTT_BROKER);
+        //..
+        try {
+            // Embedded Broker
+            // https://github.com/andsel/moquette/blob/master/
+            // embedding_moquette/src/main/java/io/moquette/
+            // testembedded/EmbeddedLauncher.java
+            EmbeddedBrokerLauncher embeddedBrokerLauncher = new EmbeddedBrokerLauncher();
+
+            // Start Hardware Mock
+            Runnable r = new Runnable() {
+            @Override
+                public void run() {
+                    try {
+                        new HardwareMock(LIDAR_PORT);
+                    } catch (InterruptedException e) {
+                        LOGGER.error("InterruptedException: ", e);
+                    }
+                }
+            };
+            new Thread(r).start();
+            Thread.sleep(2000);
+
+            // GatewayClient
+            gatewayClient = new GatewayClient<TiM55xServiceTestContract>(mqttURI, mqttClientName, new TiM55xServiceTestContract(instanceName));
+            gatewayClient.connect();
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            fail("Exception during Setup");
+        } 
+    }
+    
+    // Test case 1
+    // ...
+    // Test case n
+}
+\end{lstlisting}
+Wir starten also gleich zwei Umsysteme damit - einen Mock-Service (siehe Kapitel \ref{chap:tim-mock}) und einen MQTT-Broker. Damit lässt sich das ganze auch wieder automatisieren. Wir müssen also nicht von Hand einen Sensor ans Netzwerk anschliessen und den Broker starten. Der JUnit-Test erledigt alles für uns.
+\subsubsection{Test-Szenario 'TiM55x-Service starten'}
+Kommen wir also zum ersten Test-Szenario: den TiM55x-Service starten.
+\begin{lstlisting}[caption={TiM55x Startup-Test}]
+@Test
+@DisplayName("Start TiM55x Service")
+public void bringTiM55xServiceUp() {
+    try {
+        tiM55xService = new TiM55xService(mqttURI, "SomeTestingWithTiM55x", "SomeTestingWithTiM55x",LIDAR_IP, LIDAR_PORT);
+        Thread.sleep(2000);
+    } catch (Exception e) {
+        fail("Exception during TiM55x Startup");
+    }
+}
+\end{lstlisting}
+
+\subsubsection{Test-Szenario 'Status-Topic prüfen'}
+Jetzt wird es spannender. Wir prüfen jetzt wie sich der Status vom TiM55x-Service verhält. Dazu abonnieren wir das entsprechende Topic beim MQTT-Broker und prüfen ob der Status 'online' entspricht (\verb|assertEquals(...)|). Ansonsten wird der Test den Zustand Fail annehmen.
+\begin{lstlisting}
+@Test
+@DisplayName("Subscription to Connection Status Topic")
+public void subscribeStatus() throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+
+    MessageReceiver messageReceiver = new MessageReceiver() {
+        @Override
+        public void messageReceived(String topic, byte[] payload) throws Exception {
+            LOGGER.trace("Payload: " + new String(payload));
+            resultConnectionStatus = (ConnectionStatus) gatewayClient.toMessageSet(payload, ConnectionStatus.class).last();
+            latch.countDown();
+        }
+    };
+
+    this.gatewayClient.subscribe(tempLidarServiceContract.STATUS_CONNECTION, messageReceiver);
+    latch.await(100, TimeUnit.SECONDS);
+    assertEquals("online", resultConnectionStatus.value);
+}
+\end{lstlisting}
 
 \section{UI-Service}
 
 \section{TiM55x-zu-UI-Servant}
+\section{TiM55x Mock}
+\label{chap:tim-mock}
 
 \section{TODO}
 

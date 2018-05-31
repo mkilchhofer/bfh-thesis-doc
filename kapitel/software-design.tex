@@ -2,7 +2,7 @@
 \label{chap:software-design}
 In diesem Kapitel wird ein mögliches Design für den Robocup erläutert.
 \section{Einführung}
-Bis anhin hat die \acrshort{hftm} mit dem Team Solidus am Robocup bereits an der Spitze mitgespielt. So fragt man sich vielleicht, wieso diese Arbeit überhaupt zu Stande kommt. Bis heute entwickelt man mit einem monolithischen Ansatz. Das Meiste ist eng miteinander verzahnt und die Software lässt sich schwer und mit viel Zeit weiterentwickeln. Der Roboter für den Wettbewerb wird gleichzeitig aber ständig komplexer und es müssen immer wieder neue Dinge (Bsp. Sensoren) integriert werden. Auch müssen sich die Schüler jedes Jahr durchgehend mit allen Schichten bzw. Teilen (von Hardware bis Business-Logik) neu befassen. In den nachfolgenden Abschnitten soll gezeigt werden, wie man die einzelnen Systeme des Roboters in Domänen (Positionierung, Fahr-Einheit, Greifsystem, etc.) unterteilt und dazwischen simple und nachhaltigere Schnittstellen realisieren kann.
+In den nachfolgenden Abschnitten soll gezeigt werden, wie man die einzelnen Systeme des Roboters in Domänen (Positionierung, Fahr-Einheit, Greifsystem, etc.) unterteilt und dazwischen simple und nachhaltige Schnittstellen realisieren kann.
 Jede einzelne Komponente im System verwendet zum Austausch mit Anderen den Systemweiten Event-Bus, egal zu welcher Domain sie gehört.
 
 \section{Monolith vs. Microservice}

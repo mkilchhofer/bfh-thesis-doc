@@ -14,25 +14,119 @@ Die zu entwickelnden Services aus Kapitel \ref{chap:beispielimplementation} verw
 	\item
 	Paketierung der Services/Applikationen als Jar-File.
 \end{itemize}
-Um Maven zu verwendet erstellt man in der verwendeten Entwicklungsumgebung (\acrshort{ide}) ein Maven Projekt. Zentral in einem Maven-Projekt ist die Datei \verb|pom.xml| (\acrshort{pom} steht für \acrlong{pom}). Sie definiert wie oben erläutert die Umgebung für das Java-Projekt.
+Um Maven zu verwendet erstellt man in der verwendeten Entwicklungsumgebung (\acrshort{ide}) ein Maven Projekt. Zentral in einem Maven-Projekt ist die Datei \texttt{pom.xml} (\acrshort{pom} steht für \acrlong{pom}). Sie definiert wie oben erläutert die Umgebung für das Java-Projekt.
 
-Dependencies/Libraries sucht man beispielsweise auf \verb|mvnrepository.com|. Alle Libaries in diesem Repository kennt Maven automatisch und kann diese herunterladen. Dafür fügt man im \verb|pom.xml| als Beispiel für ,,log4j'' folgendes ein:
-\begin{lstlisting}[language=XML]
-<dependencies>
-	<dependency>
-		<groupId>org.apache.logging.log4j</groupId>
-		<artifactId>log4j-core</artifactId>
-		<version>2.11.0</version>
-	</dependency>
-</dependencies>
+\subsection{Dependencies}
+Maven verwendet so genannte Repositores um Libraries anzuziehen. Auch lokale Libraries sind in einem Repository hinterlegt. Dependencies/Libraries sucht man beispielsweise auf \texttt{mvnrepository.com}. Alle Libaries in diesem Repository kennt Maven automatisch und kann diese herunterladen. Heruntergeladen werden die Libraries (als Jar paketiert) in den Ordner \texttt{.m2} im Home-Verzeichnis des ausführenden Benutzers. In dieser Arbeit ist das also \path{/home/mkilchhofer/.m2/repository} (Fedora Linux) und unter Windows wird das in \path{C:\Users\mkilchhofer\.m2\repository} sein.
+
+Als kurzes Beispiel hier eine Demonstration zur Einbindung von Log4j2.
+\begin{enumerate}
+	\item Auf mvnrepository nach ,,Log4j Core'' suchen.
+	\item Version auswählen (hier zum Beispiel ,,2.11.0'')
+	\item XML-Struktur (Abbildung \ref{fig:mvnrepository-example}) im \texttt{pom.xml} in den Sub-Baum \texttt{<dependencies>} einfügen (Listing \ref{lst:maven-example-simple})
+\end{enumerate}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{img/voraussetzung/mvnrepository-example.png}
+	\caption{Code zum kopieren von \texttt{mvnrepository.com}}
+	\label{fig:mvnrepository-example}
+\end{figure}
+
+\begin{lstlisting}[language=XML, caption={Simples Beispiel wie ein pom.xml aussieht},label={lst:maven-example-simple}]
+<?xml version="1.0" encoding="UTF-8"?>
+<project /* ... (generiert die IDE) ... */>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>lidar-hardware-service</artifactId>
+	<groupId>info.kilchhofer.bfh</groupId>
+	<version>1.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+	</dependencies>
+</project>
 \end{lstlisting}
 Maven übernimmt dann über die \acrshort{ide} den Rest und lädt das Jar und nötigenfalls die Sources an die erfoderlichen Orte herunter.
+\subsection{Maven Lifecycle}
+In jeder aktuellen \acrshort{ide} ist Maven sehr gut eingebunden. So taucht bei einem maven-managed Projekt in der \acrshort{ide} \textit{\Gls{intellij}} folgende Komponente an der rechten Seite auf:
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{img/voraussetzung/maven-lifecycle-ide2.png}
+	\caption{Maven Lifecycle in der \acrshort{ide}}
+	\label{fig:maven-ide}
+\end{figure}
+Durch auswählen der jeweiligen Lifecycle-Phase mit anschliessendem Drücken auf den Play-Knopf wird der entsprechende Task ausgeführt. Was die einzelnen Phasen (Tasks) genau machen ist folgender Tabelle \ref{tab:mavenLifecycle} zu entnehmen.
 
-TODO: Maven kurz erklären, libs gehören nicht als *.jar ins Git
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lp{13cm}} \toprule
+		\textbf{Lifecycle} 			& \textbf{Beschreibung}		\\ \midrule
+		\texttt{clean}    & Alle generierten Objekte (Artefakte) und das Verzeichnis '\path{target}' werden gelöscht. \\ \midrule
+		\texttt{validate} & Validieren ob alle Projekt-Infos vorhanden und korrekt sind (vor allem pom.xml).		\\ \midrule
+		\texttt{compile}  & Kompiliert den Source-Code des Projekts. Syntax-Fehler im Verzeichnis '\path{src/main/..}' lassen diese Phase Fehlschlagen. Die Tests aus dem Verzeichnis '\path{src/test/..}' werden in dieser Phase noch nicht berücksichtigt.	\\ \midrule
+		\texttt{test}	  & Führt die Tests gegen den kompilierten Source-Code aus.	\\ \midrule
+		\texttt{package}  & Paketiert den Code in ein verteilbares Archiv (jar) 	\\ \midrule
+		\texttt{verify}	  &  				\\ \midrule
+		\texttt{install}  & 				\\ \midrule
+		\texttt{deploy}	  & 				\\ \bottomrule
+	\end{tabular}
+	\caption{Basic Lifecycle-Phasen in Maven. Quelle: \href{https://maven.apache.org}{maven.apache.org} \cite{maven-build-lifecycle} }
+	\label{tab:mavenLifecycle}
+\end{table}
+
+
+
 \section{Tests / Unit Tests}
-TODO
+Der zu entwickelnde Programmcode soll wie folgt automatisch auf zwei Stufen getestet werden:
+\begin{itemize}
+	\item Unit Tests (Klassen und Methoden)
+	\item Integrationstests der verschiedenen Microservices
+\end{itemize}
+Die umgesetzten Tests verwenden JUnit als Framework.  Der Aufbau von JUnit Tests zeigt dieses kleine Beispiel:
+\begin{lstlisting}[caption={Simples Beispiel wie JUnit funktioniert},label={lst:junit-example-simple}]
+package info.kilchhofer.bfh.lidar.hardwareservice;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+public class SimpleTest {
+	@Test
+	@DisplayName("myInt durch 2 teilbar aber nicht durch 3")
+	public void mySimpleTest(){
+		int myInt = 1024;
+		assertEquals(0, (myInt % 2));
+		assertNotEquals(0, (myInt % 3));
+	}
+	
+	@Test
+	@DisplayName("Log2")
+	public void mySimpleTest2(){
+		int temp = (int) (Math.log(myInt) / Math.log(2));
+		assertEquals(9, temp);
+	}
+}
+\end{lstlisting}
+Führt man diesen Test in der \acrshort{ide} \textit{\Gls{intellij}} aus, bekommt man folgenden Output:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{img/voraussetzung/junit-example.png}
+	\caption{JUnit Beispieldurchlauf}
+	\label{fig:junit-example}
+\end{figure}
+Wie zu erwarten, schlägt der zweite Test fehl, weil der Logarithmus zur Basis 2 von 1024 natürlich 10 ist. Der Erwartungswert im Test ,,Log2'' ist aber 9.
+
+Beispiele die sich auf den entwickelten Code beziehen gibt es im Abschnitt mit der Beispielimplementation (Kapitel \ref{chap:beispielimplementation}).
+
 \section{Git}
-TODO: weshalb, was gehört eingecheckt, was nicht
+Als \acrshort{vcs} setzen wir Git ein. Ins Git gehört jeglicher entwickelte Code, nicht aber Artefakten (gebuildeter Code) und IDE spezifische Einstellungen. Die entsprechenden Verzeichnisse müssen wir also ins \path{.gitignore}-File aufnehmen.
+
 \section{MQTT}
 \label{sec:mqtt}
 TODO - Stichworte: \acrshort{mqtt}, Broker, Client, publish, subscribe

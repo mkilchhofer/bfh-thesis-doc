@@ -82,8 +82,10 @@
 \usepackage{listings}
 
 \definecolor{listing-background}{rgb}{1.0,0.98,0.804}
-\definecolor{listing-comment}{rgb}{0,0.39,0}
-\definecolor{listing-string}{rgb}{0.65,0.65,0.65}
+\definecolor{listing-string}{rgb}{0,0.39,0}
+\definecolor{listing-comment}{rgb}{0.65,0.65,0.65}
+\definecolor{asparagus}{rgb}{0.53, 0.66, 0.42}
+\definecolor{ao(english)}{rgb}{0.0, 0.5, 0.0}
 \lstset{
 	basicstyle=\small\ttfamily,
 	language=Java,
@@ -95,12 +97,9 @@
 	framexleftmargin=0.5em,
 	framexrightmargin=0.5em,
 	backgroundcolor=\color{listing-background},
-	commentstyle=\color{green},
 	keywordstyle=\color{blue},
 	stringstyle=\color{listing-string},
-	commentstyle=\color{green},
-	keywordstyle=\color{blue},
-	stringstyle=\color{listing-string},
+	commentstyle=\color{listing-comment},
 	showstringspaces=false,
 	breaklines=true,
 	breakatwhitespace=true
@@ -235,7 +234,9 @@
 %\cleardoublepage
 %\phantomsection 
 \addcontentsline{toc}{chapter}{Selbständigkeitserklärung}
+\pagenumbering{Roman}
 \include{anhang/selbstaendigkeitserklaerung}
+
 %---------------------------------------------------------------------------
 
 % Glossary
@@ -262,7 +263,7 @@
 %\addcontentsline{toc}{chapter}{Literaturverzeichnis}
 %\bibliographystyle{IEEEtran}
 %\bibliography{datenbanken/bibliography}{}
-\printbibliography[heading=bibintoc]
+\printbibliography[title={Literaturverzeichnis},heading=bibintoc]
 
 %---------------------------------------------------------------------------
 
