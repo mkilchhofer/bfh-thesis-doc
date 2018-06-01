@@ -1,12 +1,12 @@
-\chapter{Software Design}
+\chapter{Ziele}
 \label{chap:software-design}
 In diesem Kapitel wird ein mögliches Design für den Robocup erläutert.
 \section{Einführung}
-In den nachfolgenden Abschnitten soll gezeigt werden, wie man die einzelnen Systeme des Roboters in Domänen (Positionierung, Fahr-Einheit, Greifsystem, etc.) unterteilt und dazwischen simple und nachhaltige Schnittstellen realisieren kann.
-Jede einzelne Komponente im System verwendet zum Austausch mit Anderen den Systemweiten Event-Bus, egal zu welcher Domain sie gehört.
+In den nachfolgenden Abschnitten soll gezeigt werden, wie man die einzelnen Systeme des Roboters in Services (Positionierung, Fahr-Einheit, Greifsystem, etc.) unterteilt und dazwischen simple Schnittstellen realisieren kann.
+Jede einzelne Komponente im System verwendet zum Austausch mit Anderen den Systemweiten Message Broker.
 
 \section{Monolith vs. Microservice}
-Man hört es heute an jedem Enwickler-Event, liest es in verschiedenen Zeitschriften, egal ob für Entwickler oder System-Administratoren: der Weg zum Ziel sollen Microservices sein, sie sollen Monolithen ablösen. Viele kleine Services statt einen grossen, verzahnten und schwierig wartbaren Moloch. 
+Man hört es heute an jedem Entwickler-Event, liest es in verschiedenen Zeitschriften, egal ob für Entwickler oder System-Administratoren: der Weg zum Ziel sollen Microservices sein, sie sollen Monolithen ablösen. Viele kleine Services statt einen grossen, verzahnten und schwierig wartbaren Moloch.
 In \cite{informatik-aktuell-microservices} findet sich ein passendes Statement zur monolithischen Applikation:
 \begin{quote}
 	Selbstverständlich startet keine Neuentwicklung als ,,grosser Monolith". Anfangs ist die Anwendung schlank, leicht zu erweitern und gut zu verstehen – die Architektur adressiert die Probleme, die das Team zu dieser Zeit hat. Im Laufe der Monate entsteht mehr und mehr Code. Es werden Schichten definiert, Abstraktionen gefunden, Module, Services und Frameworks eingeführt, um die wachsende Komplexität in den Griff zu bekommen.

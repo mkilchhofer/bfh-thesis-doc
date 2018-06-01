@@ -1,23 +1,21 @@
-\chapter{Voraussetzungen}
+\chapter{Grundlagen}
 \label{chap:voraussetzungen}
 Dieses Kapitel soll oberflächlich einige Dinge erklären, die für diese Arbeit vorausgesetzt werden.
-\section{Maven Projekt}
+\section{Apache Maven}
 \label{chap:maven}
-Maven ist ein Tool um den Build-Prozess von Software zu unterstützen. Es bietet beispielsweise Unterstützung fürs Managen der Abhängigkeiten, fürs Testing und zur Paketierung.
-
-Die zu entwickelnden Services aus Kapitel \ref{chap:beispielimplementation} verwenden Maven vor allem für das Dependency-Management. Konkret ist Maven in diesem Projekt für folgendes zuständig:
+Maven ist ein Tool um den Build-Prozess von Software zu unterstützen. Es bietet beispielsweise Unterstützung fürs Managen der Abhängigkeiten, fürs Testing und zur Paketierung. Die zu entwickelnden Services aus Kapitel \ref{chap:beispielimplementation} verwenden Maven vor allem für das Dependency-Management. Konkret ist Maven in diesem Projekt für folgendes zuständig:
 \begin{itemize}
 	\item
-	Libraries werden nicht erneut als binäres Jar-File ins Git/\acrshort{vcs}\footnote{Version Control System} hochgeladen. Der Sourcecode einer Library soll nur im \acrshort{vcs} der jeweiligen Entwickler sein.
+	Libraries müssen nicht manuell heruntergeladen und ins Projekt aufgenommen werden.
 	\item
-	Versionen der Libraries werden Zentral definiert. Ein Upgrade einer Library auf eine neue Version lässt sich somit an einem Ort erledigen.
+	Versionen der Libraries sind zentral definiert. Ein Upgrade einer Library auf eine neue Version lässt sich somit an einem Ort erledigen.
 	\item
-	Paketierung der Services/Applikationen als Jar-File.
+	Paketierung der Services/Applikationen als Jar-Datei.
 \end{itemize}
-Um Maven zu verwendet erstellt man in der verwendeten Entwicklungsumgebung (\acrshort{ide}) ein Maven Projekt. Zentral in einem Maven-Projekt ist die Datei \texttt{pom.xml} (\acrshort{pom} steht für \acrlong{pom}). Sie definiert wie oben erläutert die Umgebung für das Java-Projekt.
+Um Maven zu verwendet erstellt man in der verwendeten Entwicklungsumgebung (\acrshort{ide}) ein 'Maven-Projekt'. Zentral in einem Maven-Projekt ist die Datei \texttt{pom.xml} (\acrshort{pom} steht für \acrlong{pom}). Sie definiert wie oben erläutert die Umgebung für das Java-Projekt.
 
 \subsection{Dependencies}
-Maven verwendet so genannte Repositores um Libraries anzuziehen. Auch lokale Libraries sind in einem Repository hinterlegt. Dependencies/Libraries sucht man beispielsweise auf \texttt{mvnrepository.com}. Alle Libaries in diesem Repository kennt Maven automatisch und kann diese herunterladen. Heruntergeladen werden die Libraries (als Jar paketiert) in den Ordner \texttt{.m2} im Home-Verzeichnis des ausführenden Benutzers. In dieser Arbeit ist das also \path{/home/mkilchhofer/.m2/repository} (Fedora Linux) und unter Windows wird das in \path{C:\Users\mkilchhofer\.m2\repository} sein.
+Maven verwendet so genannte Repositores um Libraries anzuziehen. Repositories können lokal oder remote sein. Dependencies/Libraries sucht man beispielsweise auf \texttt{mvnrepository.com}. Alle Libaries in diesem Repository kennt Maven automatisch und kann diese herunterladen. Heruntergeladen werden die Libraries (als Jar paketiert) in das lokale Repository, also in den Ordner \texttt{.m2} im Home-Verzeichnis des ausführenden Benutzers. In dieser Arbeit ist das also \path{/home/mkilchhofer/.m2/repository} (Fedora Linux) und unter Windows wird das in \path{C:\Users\mkilchhofer\.m2\repository} sein.
 
 Als kurzes Beispiel hier eine Demonstration zur Einbindung von Log4j2.
 \begin{enumerate}
@@ -25,7 +23,6 @@ Als kurzes Beispiel hier eine Demonstration zur Einbindung von Log4j2.
 	\item Version auswählen (hier zum Beispiel ,,2.11.0'')
 	\item XML-Struktur (Abbildung \ref{fig:mvnrepository-example}) im \texttt{pom.xml} in den Sub-Baum \texttt{<dependencies>} einfügen (Listing \ref{lst:maven-example-simple})
 \end{enumerate}
-
 
 \begin{figure}[H]
 	\centering
@@ -52,7 +49,7 @@ Als kurzes Beispiel hier eine Demonstration zur Einbindung von Log4j2.
 	</dependencies>
 </project>
 \end{lstlisting}
-Maven übernimmt dann über die \acrshort{ide} den Rest und lädt das Jar und nötigenfalls die Sources an die erfoderlichen Orte herunter.
+Maven übernimmt dann über die \acrshort{ide} den Rest und lädt das Jar und nötigenfalls die Sources an die erforderlichen Orte herunter.
 \subsection{Maven Lifecycle}
 In jeder aktuellen \acrshort{ide} ist Maven sehr gut eingebunden. So taucht bei einem maven-managed Projekt in der \acrshort{ide} \textit{\Gls{intellij}} folgende Komponente an der rechten Seite auf:
 \begin{figure}[H]
@@ -61,20 +58,21 @@ In jeder aktuellen \acrshort{ide} ist Maven sehr gut eingebunden. So taucht bei 
 	\caption{Maven Lifecycle in der \acrshort{ide}}
 	\label{fig:maven-ide}
 \end{figure}
-Durch auswählen der jeweiligen Lifecycle-Phase mit anschliessendem Drücken auf den Play-Knopf wird der entsprechende Task ausgeführt. Was die einzelnen Phasen (Tasks) genau machen ist folgender Tabelle \ref{tab:mavenLifecycle} zu entnehmen.
+Durch das Auswählen der jeweiligen Lifecycle-Phase mit anschliessendem Drücken auf den Play-Knopf wird der entsprechende Task ausgeführt. Was die einzelnen Phasen (Tasks) genau machen ist folgender Tabelle \ref{tab:mavenLifecycle} zu entnehmen.
 
 \begin{table}[H]
 	\centering
 	\begin{tabular}{lp{13cm}} \toprule
-		\textbf{Lifecycle} 			& \textbf{Beschreibung}		\\ \midrule
-		\texttt{clean}    & Alle generierten Objekte (Artefakte) und das Verzeichnis '\path{target}' werden gelöscht. \\ \midrule
-		\texttt{validate} & Validieren ob alle Projekt-Infos vorhanden und korrekt sind (vor allem pom.xml).		\\ \midrule
-		\texttt{compile}  & Kompiliert den Source-Code des Projekts. Syntax-Fehler im Verzeichnis '\path{src/main/..}' lassen diese Phase Fehlschlagen. Die Tests aus dem Verzeichnis '\path{src/test/..}' werden in dieser Phase noch nicht berücksichtigt.	\\ \midrule
-		\texttt{test}	  & Führt die Tests gegen den kompilierten Source-Code aus.	\\ \midrule
-		\texttt{package}  & Paketiert den Code in ein verteilbares Archiv (jar) 	\\ \midrule
-		\texttt{verify}	  &  				\\ \midrule
-		\texttt{install}  & 				\\ \midrule
-		\texttt{deploy}	  & 				\\ \bottomrule
+		\textbf{Lifecycle} & \textbf{Beschreibung}\\ \midrule
+		\texttt{clean}     & Alle generierten Objekte (namentlich 'Artefakte') und das Verzeichnis '\path{target}' werden gelöscht.\\ \midrule
+		\texttt{validate}  & Validieren ob alle Projekt-Infos vorhanden und korrekt sind (vor allem pom.xml prüfen).\\ \midrule
+		\texttt{compile}   & Kompiliert den Source-Code des Projekts. Syntax-Fehler im Verzeichnis '\path{src/main/..}' lassen diese Phase Fehlschlagen. Die Tests aus dem Verzeichnis '\path{src/test/..}' werden in dieser Phase noch nicht berücksichtigt. Syntax-Fehler in den Unit-Tests beeinflussen das erfolgreiche Abschliessen dieser Phase nicht.\\ \midrule
+		\texttt{test}	   & Führt die Tests gegen den kompilierten Source-Code aus. Diese Tasks endet erfolgreich, wenn die Syntax aller Tests fehlerfrei sind und die Tests erfolgreich durchgeführt werden können.\\ \midrule
+		\texttt{package}   & Paketiert den generierten Byte-Code in ein verteilbares Archiv (Bsp. Jar)\\ \midrule
+		\texttt{verify}	   & Prüft die paketierten Datein mittels Integrations-Tests.\\ \midrule
+		\texttt{install}   & Kopiert die paketierten Dateien in das lokale Maven Repository (\path(.m2)-Ordner), um diese als Abhängigkeit in anderen lokalen Projekten zu benutzen.\\ \midrule
+		\texttt{site}      & Generiert eine Projekt-Website \\ \midrule
+		\texttt{deploy}	   & Kopiert das generierte Artefakt in ein remote Maven Repository (gleich wie \texttt{install}, nur eben Remote.)				\\ \bottomrule
 	\end{tabular}
 	\caption{Basic Lifecycle-Phasen in Maven. Quelle: \href{https://maven.apache.org}{maven.apache.org} \cite{maven-build-lifecycle} }
 	\label{tab:mavenLifecycle}
@@ -125,7 +123,7 @@ Wie zu erwarten, schlägt der zweite Test fehl, weil der Logarithmus zur Basis 2
 Beispiele die sich auf den entwickelten Code beziehen gibt es im Abschnitt mit der Beispielimplementation (Kapitel \ref{chap:beispielimplementation}).
 
 \section{Git}
-Als \acrshort{vcs} setzen wir Git ein. Ins Git gehört jeglicher entwickelte Code, nicht aber Artefakten (gebuildeter Code) und IDE spezifische Einstellungen. Die entsprechenden Verzeichnisse müssen wir also ins \path{.gitignore}-File aufnehmen.
+Als \acrshort{vcs} setzen wir Git ein. Ins Git gehört jeglicher entwickelte Code, nicht aber Artefakte (gebuildeter Code) und IDE spezifische Einstellungen. Die entsprechenden Verzeichnisse müssen wir also in \path{.gitignore}-Datei aufnehmen.
 
 \section{MQTT}
 \label{sec:mqtt}

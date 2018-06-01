@@ -1,7 +1,10 @@
 \chapter{Anhang}
-\section{Transitions-Phase}
-Die \acrshort{hftm} stellte dem Betreuer in einem eigenen Git-Repository den Sourcecode bereit. Diesen habe ich anschliessend als Zip-Datei via E-Mail erhalten. Während dieser Arbeit (am 16. April) habe ich lesenden Zugriff auf das Git-Repository der \acrshort{hftm} erhalten\cite{gitlab.com/solidus/hefei}. Dabei ist aufgefallen, dass beide Code-Repos Projekt-Files der \acrshort{ide} beinhalten. Teils zeigen auch Pfade gegen das User-Home des Commiters. Auch sind Log-Dateien und Abhängigkeiten (lib / Jar-Files) im Git des Projekts eingecheckt:
-\begin{lstlisting}[caption={Listing der Daten im Git-Repository 'gitlab.com/solidus/hefei'},language=Bash, columns=fixed]
+\section{Transitions-Phase Stand Heute zu Microservices}
+Die \acrshort{hftm} stellte dem Betreuer in einem eigenen Git-Repository den Sourcecode bereit. Diesen habe ich anschliessend als Zip-Datei via E-Mail erhalten. Während dieser Arbeit (am 16. April) habe ich lesenden Zugriff auf das Git-Repository der \acrshort{hftm} erhalten\cite{gitlab.com/solidus/hefei}. 
+
+\subsection{Ist-Zustand}
+Beim Betrachten des eingecheckten Codes ist aufgefallen, dass beide Code-Repos Projekt-Files der \acrshort{ide} beinhalten. Teils zeigen bei solchen Daten Pfade gegen das User-Home des Commiters. Auch sind Log-Dateien und Libraries/Abhängigkeiten (lib / Jar-Files) im Git des Projekts eingecheckt (siehe Listing \ref{lst:gitlab-listing}). 
+\begin{lstlisting}[caption={Listing der Daten im Git-Repository 'gitlab.com/solidus/hefei'},language=Bash, columns=fixed,label={lst:gitlab-listing}]
 $ du -sch .[!.]* *
 17M	.git
 4.0K	.gitignore
@@ -17,11 +20,11 @@ $ du -sch .[!.]* *
 -------------
 143M	total
 \end{lstlisting}
+\subsection{Soll-Zustand}
+Auf den \verb|lib|-Ordner kann komplett verzichtet werden, sobald Dependencies über Maven verwaltet werden (siehe Kapitel \ref{chap:voraussetzungen} und \ref{chap:maven}). Libraries werden nicht erneut als binäres Jar-File ins Git/\acrshort{vcs}\footnote{Version Control System} hochgeladen. Der Sourcecode einer Library bleibt ebenfalls nur im \acrshort{vcs} der jeweiligen Entwickler.
 
-Auf den \verb|lib|-Ordner kann komplett verzichtet werden, sobald Dependencies über Maven verwaltet werden (siehe Kapitel \ref{chap:voraussetzungen} und \ref{chap:maven}).
+Die Ordner \path{logs} und \path{nbproject} können einfach in der \path{.gitignore}-Datei auf die Blacklist gesetzt werden. Logs gehören grundsätzlich nicht ins \acrshort{vcs} und die \acrshort{ide}-spezifischen werden über Maven oder die Entwicklungsumgebung selbst beim Öffnen des Projekts automatisch erstellt. Das Projekt kann vollständig in Maven definiert werden (bsp. die Main-Klassen).
 
-Die Ordner \verb|logs| und \verb|nbproject| können einfach in der \verb|.gitignore|-Datei auf die Blacklist gesetzt werden. Logs gehören grundsätzlich nicht ins \acrshort{vcs} und die \acrshort{ide}-spezifischen werden über Maven oder die Entwicklungsumgebung selbst beim Öffnen des Projekts automatisch erstellt. Das Projekt kann vollständig in Maven definiert werden (bsp. die Main-Klassen).
-
-\section{Selbstständigkeitserklärung}
+\section{Korrespondenz}
 \section{Anderes}
 

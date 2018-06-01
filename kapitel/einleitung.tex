@@ -1,22 +1,7 @@
 \chapter{Einleitung}
 \pagenumbering{arabic}
-\section{Aufgabenstellung gemäss Eingabe}
-\label{chap:aufgabenstellung}
-Im Dokument 'Bachelorthesis-Aufgabe ist' folgendes festgehalten:
-\begin{quote}
-Seit mehreren Jahren bestreitet die HFTM unter der Leitung von Alain Rohr mit dem Solidus Team erfolgreich die internationalen Meisterschaften des RoboCups in der 'Logistics League'.
-Das Team kennt sich meisterlich mit der Ansteuerung der Hardware aus, bittet aber die BFH um Mithilfe beim Software-Engineering.
-Die Aufgabe dieser Arbeit ist es, ein Software-Design für die einzelnen Komponenten des verwendeten Roboters zu entwerfen. Angelehnt an die Vorgehensweise 'Domain Driven Design' soll konkret anhand des LIDARS gezeigt werden, wie das erarbeitete Software-Design implementiert und genutzt werden soll. Folgende Merkmale soll das Design mindestens aufweisen:
-
-\begin{itemize}
-	\item Die Schnittstelle der einzelnen Domänen muss Programmiersprachen-agnostisch sein
-	\item Die Domänen müssen abgekapselt und unabhängig entwickelt und getestet werden können
-	\item Das Design muss klar vorsehen, dass jedes Jahr das Entwicklungsteam komplett ausgetauscht wird
-\end{itemize}
-Bei dieser Arbeit gilt es auch zu beachten, dass die Software-Fähigkeiten des jeweiligen Entwicklungsteams erst noch ausgebildet werden müssen, es also nötig ist, die Schnittstellen so leicht und verständlich wie möglich zu halten, um nicht eine zu steile Lernkurve als Voraussetzung zu erschaffen.
-\end{quote}
-Im Kapitel \ref{sec:aufgabenstellung-messbar} wird die messbare Aufgabenstellung erläutert.
-
+Die Studenten der Höheren Fachschule für Technik Mittelland (\acrshort{hftm}) aus der Studienrichtung Systemtechnik nehmen seit einigen Jahren am internationalen RoboCup teil. Dazu kommt ein Roboter mit selbst entwickelter Hard- und Software zum Einsatz. Unter dem Team-Namen ,,Solidus'' spielen die Studenten am RoboCup bereits an der Spitze mit (2. und 3. Platz). Das Team besteht nebst dem Dozenten Alain Rohr jedes Jahr aus neuen Studenten die keinen vertieften Hintergrund in der Softwareentwicklung haben. Sie übernehmen die bestehende Code-Base vom vorherigen Team und müssen diese an die neuen Gegebenheiten anpassen und erweitern. Beispielsweise ändert sich jährlich die Umgebung (Lichtverhältnisse, etc.), die Cup-Regeln und es müssen neue Sensoren oder Aktoren integriert werden. Die historisch gewachsene, monolithische Architektur der Software wirkt diesen Anforderungen aber entgegen.
+Sie baten die BFH um Hilfe beim Software-Engineering. Es geht in dieser Arbeit also darum, ein Design für die Roboter-Software zu entwerfen, so dass die Studenten unabhängig voneinander entwickeln können.
 \section{RoboCup}
 Der RoboCup ist ein Wettbewerb, der seit 1997 jährlich ausgetragen wird \cite{wikipedia-robocup}. Ursprünglich ging es hauptsächlich darum, Roboter zu entwickeln, die gegeneinander Fussball spielen. Das langfristige Ziel dieses Wettbewerbs \cite{wikipedia-roboterfussball}: 
 \begin{quote}
@@ -33,7 +18,7 @@ So gibt es beispielsweise in der Disziplin ,,RoboCupSoccer'' die Liga ,,Humanoid
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.2\textwidth]{img/robocup/13-06-28-robocup-eindhoven-024.jpg}
-	\caption{Roboter beim Fussball spielen. Foto von Ralf Roletschek / roletschek.at \cite{robocup2013}}
+	\caption{Roboter beim Fussball spielen. Quelle: Ralf Roletschek / roletschek.at \cite{robocup2013}}
 	\label{fig:robocup_fussball}
 \end{figure}
 \subsection{RoboCupLogistics}
@@ -41,7 +26,7 @@ Seit 2012 gibt es am RoboCup die Liga ,,Logistics'', die wie folgt spezifiziert 
 \begin{quote}
 	Ziel dieser Liga ist die Entwicklung von autonom agierender Roboter zur Steuerung des Material- und Informationsflusses in industriellen Produktionsanlagen.
 \end{quote}
-Es spielen zwei Teams gegeneinander mit jeweils 3 Robotern. Auf dem  Spielfeld (Abbildung \ref{fig:robocup_spielfeld}) sind pro Team zufällig sieben Maschinen  aufgestellt. Diese müssen von den Robotern erkundet werden. Dafür hat jede Maschine vorne und hinten einen eindeutigen 2D-Code aufgedruckt, dem so genannten AR Tag (Prinzip ähnlich einem QR-Code). Jede Maschine repräsentiert eine Station in einer Produktionsanlage (einer ,,smart factory''). An jeder Station können Gegenstände zugebracht und auf der gegenüberliegenden Seite entnommen werden. Kontrolliert, überwacht und bewertet wird das Spiel von der ,,Referee Box''. Von ihr werden die 'Active orders'(Bestellungen) verwaltet und publiziert, die die Roboter auf dem Spielfeld umsetzen müssen. Sie koordiniert auch die Maschinen auf dem Spielfeld, zu denen die Roboter fahren müssen, um Gegenstände zu bringen und abzuholen.
+Es spielen zwei Teams gegeneinander mit jeweils 3 Robotern. Auf dem  Spielfeld (Abbildung \ref{fig:robocup_spielfeld}) sind pro Team zufällig sieben Maschinen  aufgestellt. Diese müssen von den Robotern erkundet werden. Dafür hat jede Maschine vorne und hinten einen eindeutigen 2D-Code aufgedruckt, dem so genannten AR Tag (Prinzip ähnlich einem QR-Code). Jede Maschine repräsentiert eine Station in einer Produktionsanlage (einer ,,smart factory''). An jeder Station können Gegenstände zugebracht und auf der gegenüberliegenden Seite entnommen werden. Kontrolliert, überwacht und bewertet wird das Spiel von der ,,Referee Box''. Von ihr werden die 'Active orders' (Bestellungen) verwaltet und publiziert, die die Roboter auf dem Spielfeld umsetzen müssen. Sie koordiniert auch die Maschinen auf dem Spielfeld, zu denen die Roboter fahren müssen, um Gegenstände zu bringen und abzuholen.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.75\textwidth]{img/robocup/spielfeld_2d.png}
@@ -49,7 +34,7 @@ Es spielen zwei Teams gegeneinander mit jeweils 3 Robotern. Auf dem  Spielfeld (
 	\label{fig:robocup_spielfeld}
 \end{figure}
 
-Die verwendeten Roboter in dieser Liga basieren auf der ,,Robotino''-Plattform  von Festo, die den Wettbewerb auch mit den Maschinen und anderem sponsern. Auf dieser Roboterplattform können verschiedene Sensoren, Aktoren und Computer-Systeme angebaut werden. 
+Die verwendeten Roboter in dieser Liga basieren auf der ,,Robotino''-Plattform  von Festo (Abbildung \ref{fig:robotino}), die den Wettbewerb auch mit den Maschinen und anderem sponsern. Auf dieser Roboterplattform können verschiedene Sensoren, Aktoren und Computer-Systeme angebaut werden.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.5\textwidth]{img/robocup/robotino_v3.jpg}
@@ -57,10 +42,9 @@ Die verwendeten Roboter in dieser Liga basieren auf der ,,Robotino''-Plattform  
 	\label{fig:robotino}
 \end{figure}
 
-\section{\acrfull{hftm}}
-Bis anhin haben die Studenten der Höheren Fachschule für Technik Mittelland (\acrshort{hftm}) aus der Studienrichtung Systemtechnik am RoboCup unter dem Team-Namen Solidus bereits an der Spitze mitgespielt. So fragt man sich vielleicht, wieso diese Arbeit überhaupt zu Stande kommt. \\ Bis heute entwickelt man mit einem monolithischen Ansatz. Das Meiste ist eng miteinander verzahnt und die Software lässt sich schwer und mit viel Zeit weiterentwickeln. Der Roboter für den Wettbewerb wird gleichzeitig aber von Jahr zu Jahr komplexer und es müssen immer wieder Anpassungen an die neue Regeln gemacht werden und neue Dinge (Bsp. Sensoren) integriert werden. Auch müssen sich die Schüler jedes Jahr durchgehend mit allen Softwareteilen (von der Hardware-Ansteuerung bis Business-Logik) neu befassen. Die Studenten haben im Normalfall keinen Softwareentwicklungs-Hintergrund und werden parallel erst an Java ausgebildet.
 
-\section{Lidar}
+
+\section{\acrshort{lidar}}
 Diese Arbeit zeigt anhand eines \acrshort{lidar}-Sensors, wie ein mögliches Software-Design für den Roboter aussehen kann. Doch was ist \acrshort{lidar}?
 \begin{quote}
 	Lidar ist eine dem Radar verwandte Methode zur optischen Abstands- und Geschwindigkeitsmessung sowie zur Fernmessung atmosphärischer Parameter. Statt der Radiowellen wie beim Radar werden Laserstrahlen verwendet. \cite{wikipedia-lidar}

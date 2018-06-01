@@ -1,4 +1,4 @@
-\chapter{Implementation der Beispielservices für den Lidar}
+\chapter{Implementation der Beispielservices für den \acrshort{lidar}}
 Hier gehe ich darauf ein, wie sich das Konzept aus Kapitel \ref{chap:software-design} in Programmcode umsetzen lässt. Dabei versuche ich den Code so einfach wie möglich zu halten, da die Schüler der HFTM parallel erst an Java ausgebildet werden (siehe Anforderungen aus Abschnitt \ref{chap:aufgabenstellung}). Auf Lambda-Ausdrücke wird beispielsweise verzichtet.
 \label{chap:beispielimplementation}
 \section{Die Library 'GatewayClient'}
@@ -36,7 +36,7 @@ Unter 'Service Logic' versteht man die eigentliche (abstrahierte) Logik um einen
 
 
 \section{TiM55x-Service}
-Der TiM55x-Service enthält (dh. \verb|import|) zum einen den GatewayClient sowie die Library der HFTM zur Dekodierung und Ansteuerung des Lidars (also der 'Service Source'). Wir müssen uns folglich also um die 'Service Logic' aus Abbildung \ref{fig:lidarservice} kümmern.
+Der TiM55x-Service enthält (dh. \verb|import|) zum einen den GatewayClient sowie die Library der HFTM zur Dekodierung und Ansteuerung des \acrshort{lidar}s (also der 'Service Source'). Wir müssen uns folglich also um die 'Service Logic' aus Abbildung \ref{fig:lidarservice} kümmern.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.6\textwidth]{img/ch.quantasy.mqtt.gateway/LidarService.png}
@@ -124,6 +124,7 @@ public class LidarMeasurementEvent extends AnEvent{
 \subsection{Service Logik implementieren}
 Die nachfolgenden Code-Snippets aus Listing \ref{lst:TiM55x-service} zeigen den Aufbau des TiM55x-Service. Der GatewayClient wird über \verb|<LidarServiceContract>| mit dem \Gls{contract} instantiiert, damit er die Schnittstelle kennt. Bei den Zeilen mit \verb|IScanListener ... |, \verb|IScanOperator ...| sowie \verb|new TiM55x(...)| sieht man die Anbindung an die Sensor-Libary. Andersherum bei \verb|MessageReceiver| und \verb|gatewayClient.subscribe| die Anbindung mit dem GatewayClient an \acrshort{mqtt}. Der Code zeigt also schön, wie die 'Service Logic' beide ,,Welten'' zusammenklebt.
 \lstinputlisting[caption={Aufbau TiM55x-Service},language=Java,label={lst:TiM55x-service}]{listings/lidarservice_new.java}
+Beim Verarbeiten des Intents wirds spannend. Wir können mit dem GatewayClient ein Set von Messages erhalten - sprich wir können mehrere Intents zum exakt gleichen Zeitpunkt erhalten. Wir nehmen hier einfach den letzten (also den neuesten) im Set. Wie sich ein Service genau verhalten soll, muss genau geklärt werden. Hier wird es sicherlich keinen Sinn machen, den Laser beispielsweise zu aktivieren und gleich wieder zu deaktivieren. Oder wenn zwei Anfragen für eine Einzel-Messung kommen, reicht es auch, die letzte Anfrage zu Schedulen, es hören ja alle zu und bekommen die Messwerte geliefert.
 
 \subsection{Tests mit JUnit}
 Der TiM55x-Service verwendet als '\Gls{service-source}' die Library der HFTM. Theoretisch müsste hier also die '\Gls{service-logic}' per Unit-Test getestet werden. Ein einfacher Unittest ist aber ohne beiden Libraryies '\Gls{service-source}' und '\Gls{gatewayclient}' zu Mocken fast nicht möglich und auch nicht sehr aussagekräftig. Deshalb werden am Service lediglich Integrationstests mit JUnit durchgeführt.
