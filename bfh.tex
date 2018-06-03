@@ -79,6 +79,7 @@
 
 % Listings Packages ausserhalb "BFH Standard"
 %---------------------------------------------------------------------------
+\input{variables}
 \usepackage{listings}
 
 \definecolor{listing-background}{rgb}{1.0,0.98,0.804}
@@ -115,9 +116,10 @@
 	hypertexnames={true},			% no failures "same page(i)"
 	bookmarksopen={true},			% opens the bar on the left side
 	bookmarksopenlevel={0},		% depth of opened bookmarks
-	pdftitle={Template für Bachelor Thesis},% PDF-property
-	pdfauthor={brd3},			% PDF-property
-	pdfsubject={LaTeX Template},		% PDF-property
+	pdftitle={\titel},% PDF-property
+	pdfauthor={\autor},			% PDF-property
+	pdfsubject={\ArtDerArbeit},		% PDF-property
+	pdfkeywords={\ArtDerArbeit, HFTM, BFH, kilcm1, 2018},
 	linkcolor={linkcolor},		% Color of Links
 	citecolor={linkcolor},		% Color of Cite-Links
 	urlcolor={linkcolor},			% Color of URLs
@@ -158,7 +160,9 @@
 % for futher informations go to http://ewus.de/tipp-1029.html
 %---------------------------------------------------------------------------
 %\usepackage[nonumberlist]{glossaries}
-\include{datenbanken/glossary}
+%\include{datenbanken/glossary}
+\input{datenbanken/glossary}
+\input{datenbanken/abbreviations}
 \makeglossaries
 %---------------------------------------------------------------------------
 
@@ -171,7 +175,6 @@
 
 %\input{vorspann/titel}				% Titel der Arbeit aus Datei titel.tex lesen
 %\input{vorspann/version}			% Versionsnummer und -datum aus Datei version.tex lesen
-\input{variables}
 
 % Set up header and footer
 %---------------------------------------------------------------------------
@@ -220,9 +223,9 @@
 %---------------------------------------------------------------------------
 \include{kapitel/einleitung}
 %\pagenumbering{arabic}
-\include{kapitel/voraussetzungen}
-\include{kapitel/software-design}
-\include{kapitel/beispiel-implementation}
+\include{kapitel/grundlagen}
+\include{kapitel/design}
+\include{kapitel/implementation}
 \include{kapitel/probleme}
 \include{kapitel/ausblick}
 \include{vorspann/projektmanagement}
@@ -248,11 +251,9 @@
 %\printglossary
 
 % Glossar ausgeben
-\include{datenbanken/glossary}
 \printglossary[title=Glossar]
 
 % Abkuerzungen ausgeben
-\include{datenbanken/abbreviations}
 \printglossary[type=\acronymtype, title=Abkürzungsverzeichnis]
 %---------------------------------------------------------------------------
 
@@ -283,9 +284,11 @@
 %---------------------------------------------------------------------------
 %\cleardoublepage
 %\phantomsection 
-\addcontentsline{toc}{chapter}{Stichwortverzeichnis}
-\renewcommand{\indexname}{Stichwortverzeichnis}
-\printindex
+%\addcontentsline{toc}{chapter}{Stichwortverzeichnis}
+%\renewcommand{\indexname}{Stichwortverzeichnis}
+%\printindex
+% Usage:
+% Hello World\index{Hello World}
 %---------------------------------------------------------------------------
 
 % Attachment:
