@@ -5,7 +5,7 @@ Hier gehe ich darauf ein, wie sich das Konzept aus Kapitel \ref{chap:software-de
 Mit der  Java-Library \verb|ch.quantasy.mqtt.gateway| von Reto Koenig\cite{ch.quantasy.mqtt.gateway} lässt sich einfach ein Microservice entwickeln, der sich bereits an das Muster aus Kapitel \ref{sec:isePattern} hält. Man kann damit keine Messages ins MQTT publizieren die das Muster verletzen. 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.6\textwidth]{img/ch.quantasy.mqtt.gateway/GatewayClient.png}
+	\includegraphics[width=0.6\textwidth]{img/gatewayclient.png}
 	\caption{GatewayClient, ch.quantasy.mqtt.gateway\cite{ch.quantasy.mqtt.gateway}}
 	\label{fig:gatewayclient}
 \end{figure}
@@ -24,7 +24,7 @@ In Abbildung \ref{fig:gatewayclient} ist ersichtlich wie die Library die Basis-T
 An den GatewayClient wird die eigentliche Service Logik angebunden. Im Github-README unterscheidet Reto Koenig\cite{ch.quantasy.mqtt.gateway} dabei wie in Abbildung \ref{fig:microService} ersichtlich zwischen 'Service Logic' und 'Service Source':
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.6\textwidth]{img/ch.quantasy.mqtt.gateway/MicroService.png}
+	\includegraphics[width=0.6\textwidth]{img/gatewayclient-microservice.pdf}
 	\caption{Micro-Service mit GatewayClient \cite{ch.quantasy.mqtt.gateway}}
 	\label{fig:microService}
 \end{figure}
@@ -39,15 +39,15 @@ Unter 'Service Logic' versteht man die eigentliche (abstrahierte) Logik um einen
 Der TiM55x-Service enthält (dh. \verb|import|) zum einen den GatewayClient sowie die Library der HFTM zur Dekodierung und Ansteuerung des \acrshort{lidar}s (also der 'Service Source'). Wir müssen uns folglich also um die 'Service Logic' aus Abbildung \ref{fig:lidarservice} kümmern.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.6\textwidth]{img/ch.quantasy.mqtt.gateway/LidarService.png}
+	\includegraphics[width=0.6\textwidth]{img/tim55xservice.pdf}
 	\caption{TiM55x-Service, Quelle des Diagramm-Templates: \cite{ch.quantasy.mqtt.gateway}}
 	\label{fig:lidarservice}
 \end{figure}
 
-Der TiM55x-Service ist wie in Abbildung \ref{fig:structure_lidarservice} strukturiert. Alles aus dem Java-Package 'contract' kennt auch der Consumer bzw. Provider von unserem Service, also der Servant - solange er auch den GatewayClient verwendet. Darin enthalten ist also die Definition der Schnittstelle und (Objekt-)Strukturen der Daten, die auf dem Event-Bus vorhanden sind.
+Der TiM55x-Service ist wie in Abbildung \ref{fig:structure_lidarservice} strukturiert. Die Idee ist, dass der Servant alles aus dem Java-Package 'binding	' von unserem Service kennt, solange er auch den GatewayClient verwendet. Darin enthalten ist also die Definition der Schnittstelle und (Objekt-)Strukturen der Daten, die auf dem Event-Bus vorhanden sind.
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.5]{img/implementation/lidar-adapter/structure.png}
+	\includegraphics[scale=0.5]{img/java-packagestructure-tim55xservice.png}
 	\caption{TiM55x-Service, Struktur}
 	\label{fig:structure_lidarservice}
 \end{figure}
@@ -88,7 +88,8 @@ und durch Vererbung:
 \end{itemize}
 , wobei über den Aufruf \verb|super(rootContext: "Robocup", baseClass: "Lidar", instanceID)| die variablen Teile der \Glspl{topic} entsprechend gesetzt werden.
 
-Schauen wir uns als Beispiel noch das 'measurement'-\Gls{topic} an. Eine Momentaufnahme des \acrshort{lidar}-Sensors also eine Messung beinhaltet 270 Messpunkte mit dieser Struktur:
+\subsubsection{Mess Events}
+Schauen wir uns als Beispiel noch das 'measurement'-\Gls{topic} an. Eine Momentaufnahme des \acrshort{lidar}-Sensors, also einer Messung, beinhaltet 270 Messpunkte mit dieser Struktur:
 \begin{lstlisting}[caption={TiM55x-Service - Struktur der Messpunkte},label={lst:lidar_measurement}]
 public class Measurement {
     @Range(from = -45, to = 225)
@@ -121,13 +122,59 @@ public class LidarMeasurementEvent extends AnEvent{
 }
 \end{lstlisting}
 
+\subsubsection{Intent}
+Als Intent bietet der TiM55x-Service an eine Einzel-Messung auszuführen, eine kontinuierliche Messung zu starten und diese zu stoppen. Diese drei Aktionen bietet die Library der HFTM zur Zeit an.
+\begin{lstlisting}
+import ch.quantasy.mqtt.gateway.client.message.AnIntent;
+import ch.quantasy.mqtt.gateway.client.message.annotations.Nullable;
+
+public class LidarIntent extends AnIntent {
+    @Nullable
+    public LidarCommand command;
+    
+    //..
+}
+\end{lstlisting}
+LidarCommand ist dabei lediglich ein Enum:
+\begin{lstlisting}
+public enum LidarCommand {
+    START_CONTINUOUS_MEASUREMENT, STOP_CONTINUOUS_MEASUREMENT, SINGLE_MEASUREMENT
+}
+\end{lstlisting}
+
 \subsection{Service Logik implementieren}
 Die nachfolgenden Code-Snippets aus Listing \ref{lst:TiM55x-service} zeigen den Aufbau des TiM55x-Service. Der GatewayClient wird über \verb|<LidarServiceContract>| mit dem \Gls{contract} instantiiert, damit er die Schnittstelle kennt. Bei den Zeilen mit \verb|IScanListener ... |, \verb|IScanOperator ...| sowie \verb|new TiM55x(...)| sieht man die Anbindung an die Sensor-Libary. Andersherum bei \verb|MessageReceiver| und \verb|gatewayClient.subscribe| die Anbindung mit dem GatewayClient an \acrshort{mqtt}. Der Code zeigt also schön, wie die 'Service Logic' beide ,,Welten'' zusammenklebt.
+
 \lstinputlisting[caption={Aufbau TiM55x-Service},language=Java,label={lst:TiM55x-service}]{listings/lidarservice_new.java}
+
 Beim Verarbeiten des Intents wirds spannend. Wir können mit dem GatewayClient ein Set von Messages erhalten - sprich wir können mehrere Intents zum exakt gleichen Zeitpunkt erhalten. Wir nehmen hier einfach den letzten (also den neuesten) im Set. Wie sich ein Service genau verhalten soll, muss genau geklärt werden. Hier wird es sicherlich keinen Sinn machen, den Laser beispielsweise zu aktivieren und gleich wieder zu deaktivieren. Oder wenn zwei Anfragen für eine Einzel-Messung kommen, reicht es auch, die letzte Anfrage zu Schedulen, es hören ja alle zu und bekommen die Messwerte geliefert.
 
+\subsection{Beispiel-Message am MQTT-Broker}
+Der Programmcode aus den Abschnitten oben, wird folgende Nachrichten auf dem MQTT-Broker erzeugen:
+\begin{lstlisting}
+Robocup/Lidar/U/127.0.0.1@kicm-fedora.localdomain/I ---
+- timeStamp: 1528384864556686000
+  command: "SINGLE_MEASUREMENT"
+
+Robocup/Lidar/U/127.0.0.1@kicm-fedora.localdomain/E/measurement ---
+- timeStamp: 1528384864699874545
+  measurements:
+- angle: -45
+  distance: 278
+  rssi: 154
+- angle: -44
+  distance: 288
+  rssi: 157
+  .
+  . (nicht komplett)
+  .
+- angle: 224
+  distance: 1130
+  rssi: 182
+\end{lstlisting}
+
 \subsection{Tests mit JUnit}
-Der TiM55x-Service verwendet als '\Gls{service-source}' die Library der HFTM. Theoretisch müsste hier also die '\Gls{service-logic}' per Unit-Test getestet werden. Ein einfacher Unittest ist aber ohne beiden Libraryies '\Gls{service-source}' und '\Gls{gatewayclient}' zu Mocken fast nicht möglich und auch nicht sehr aussagekräftig. Deshalb werden am Service lediglich Integrationstests mit JUnit durchgeführt.
+Der TiM55x-Service verwendet als '\Gls{service-source}' die Library der HFTM. Theoretisch müsste hier also die '\Gls{service-logic}' per Unit-Test getestet werden. Ein einfacher Unittest ist aber ohne beiden Libraries '\Gls{service-source}' und '\Gls{gatewayclient}' zu Mocken fast nicht möglich und auch nicht sehr aussagekräftig. Deshalb werden am Service lediglich Service-Tests mit JUnit durchgeführt. Dies geschieht automatisch in der Maven Lifecycle-Phase \textit{integration-test}.
 \subsubsection{Integrationstest initialisieren}
 Initialisiert wird das Setup wie folgt:
 \begin{lstlisting}[caption={Integrations-Test Setup für TiM55x},label={lst:integrationstest-tim55x-setup}]
@@ -171,12 +218,10 @@ public class TiM55xServiceIntegrationTest {
         } 
     }
     
-    // Test case 1
-    // ...
-    // Test case n
+    // Hier folgen die Test cases
 }
 \end{lstlisting}
-Wir starten also gleich zwei Umsysteme damit - einen Mock-Service (siehe Kapitel \ref{chap:tim-mock}) und einen MQTT-Broker. Damit lässt sich das ganze auch wieder automatisieren. Wir müssen also nicht von Hand einen Sensor ans Netzwerk anschliessen und den Broker starten. Der JUnit-Test erledigt alles für uns.
+Wir starten also gleich zwei Umsysteme damit - einen Mock-Service (siehe Kapitel \ref{chap:tim-mock}) und einen MQTT-Broker (Moquette MQTT broker \cite{moquette-mqtt-broker}). Damit lässt sich das ganze auch wieder automatisieren. Wir müssen also nicht von Hand erst einen Sensor ans Netzwerk anschliessen, den Broker starten und danach erst den Test ausführen. Der JUnit-Test erledigt alles für uns. So wird sichergestellt, dass bei jedem Release aussagekräftige Tests durchgeführt werden. Bei einer Anpassung am Code, sieht man also sofort, dass etwas nicht mehr stimmt. 
 \subsubsection{Test-Szenario 'TiM55x-Service starten'}
 Kommen wir also zum ersten Test-Szenario: den TiM55x-Service starten.
 \begin{lstlisting}[caption={TiM55x Startup-Test}]
@@ -193,7 +238,7 @@ public void bringTiM55xServiceUp() {
 \end{lstlisting}
 
 \subsubsection{Test-Szenario 'Status-Topic prüfen'}
-Jetzt wird es spannender. Wir prüfen jetzt wie sich der Status vom TiM55x-Service verhält. Dazu abonnieren wir das entsprechende Topic beim MQTT-Broker und prüfen ob der Status 'online' entspricht (\verb|assertEquals(...)|). Ansonsten wird der Test den Zustand Fail annehmen.
+Jetzt wird es spannender. Wir prüfen nun, wie sich der Status vom TiM55x-Service verhält. Dazu abonnieren wir das entsprechende Topic beim MQTT-Broker und prüfen ob der Status 'online' entspricht (\verb|assertEquals(...)|). Falls nicht, schlägt dieser Test fehl.
 \begin{lstlisting}
 @Test
 @DisplayName("Subscription to Connection Status Topic")
@@ -215,11 +260,158 @@ public void subscribeStatus() throws InterruptedException {
 }
 \end{lstlisting}
 
-\section{UI-Service}
+\section{Console UI-Service}
+Nachdem wir nun im Grundsatz wissen, wie ein Service aufgebaut wird, fallen die Erklärungen in diesem Abschnitt geringer aus.\\ Ein einfacher UI Service soll uns ein Command Line Interface zur Verfügung stellen. Die Struktur sieht analog vom TiM55x-Service aus:
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{img/java-packagestructure-consoleuiservice.png}
+	\caption{ConsoleUI-Service, Struktur}
+	\label{fig:structure_consoleuiservice}
+\end{figure}
+\subsection{Contracts definieren}
+\subsubsection{Event}
+Er wird jeden Tastendruck als einzelnen Event publizieren (Listing \ref{lst:consoleui-KeyPressEvent}).
+\begin{lstlisting}[caption={KeyPressEvent für den ConsoleUI-Service},label={lst:consoleui-KeyPressEvent}]
+public class ConsoleKeyPressEvent extends AnEvent{
+    @StringForm
+    @StringSize (min=1, max=1)
+    public Character character;
 
-\section{TiM55x-zu-UI-Servant}
-\section{TiM55x Mock}
+    public ConsoleKeyPressEvent(Character character){
+        this.character = character;
+    }
+
+    public ConsoleKeyPressEvent() {
+    }
+}
+\end{lstlisting}
+\subsubsection{Intent}
+Als Intent bietet der Service an, einen String ins Terminal zu schreiben (Listing \ref{lst:consoleui-intent}). Hier ist zusätzlich noch ein weiterer Intent verfügbar: loggerSettings. Damit kann man den Loglevel zur Laufzeit ändern. Er soll aus Beispiel dienen. Über die Annotations wird in diesem \Gls{contract} festgelegt, dass sie nicht vorhanden sein müssen. Wir könnten also auch einen Intent an diesen Service senden, der nur einen Timestamp enthält. Diesen erzwingt der GatewayClient.
+\begin{lstlisting}[caption={Intent für den ConsoleUI-Service},label={lst:consoleui-intent}]
+public class ConsoleIntent extends AnIntent{
+    @Nullable
+    public LoggerSettings loggerSettings;
+
+    @Nullable
+    @StringForm
+    public String consoleMessage;
+
+    public ConsoleIntent(String consoleMessage){
+        this.consoleMessage = consoleMessage;
+    }
+
+    public ConsoleIntent(){
+    }
+}
+\end{lstlisting}
+\subsection{Service Logik implementieren}
+Die Logik ist wieder analog wie beim TiM55x-Service:
+\begin{lstlisting}
+//..
+// Intent Handling
+this.intentReceiver = new MessageReceiver() {
+    @Override
+    public void messageReceived(String topic, byte[] payload) throws Exception {
+        for(ConsoleIntent intent : gatewayClient.toMessageSet(payload, ConsoleIntent.class)){
+            if (intent.consoleMessage != null){
+                System.out.println(intent.consoleMessage);
+            }
+
+            if (intent.loggerSettings != null){
+                intent.loggerSettings.configure();
+            }
+        }
+    }
+};
+this.gatewayClient.connect();
+this.gatewayClient.subscribe(gatewayClient.getContract().INTENT + "/#", this.intentReceiver);
+
+// Event / Console Handling
+IKeyPressListener keyPressListener = new IKeyPressListener() {
+    @Override
+    public void keyPressed(Character character) {
+        gatewayClient.readyToPublish(gatewayClient.getContract().EVENT_KEYPRESS, new ConsoleKeyPressEvent(character));
+    }
+};
+keyPressHandler = new KeyPressHandler(keyPressListener);
+Thread keyPressHandlerThread = new Thread(keyPressHandler);
+keyPressHandlerThread.start();
+\end{lstlisting}
+
+\section{TiM55x-zu-ConsoleUI-Servant}
+Im Abschnitt \ref{sec:Architektur} wird erläutert, dass Services untereinander keine Abhängigkeit haben. Der Servant aber hat nun aber Abhängigkeiten zu den bedienenden Services. So müssen wir also diese Abhängigkeiten im POM spezifizieren, damit wir den Inhalt der entsprechenden Jars auf dem ClassPath zur Verfügung haben und die Bindings benützen können:
+\begin{lstlisting}[caption={Dependencies vom TiM55x-zu-UI-Servant},label={},language={XML}]
+<dependency>
+  <groupId>info.kilchhofer.bfh</groupId>
+  <artifactId>robocup-consoleui-service</artifactId>
+  <version>20180607.0</version>
+</dependency>
+  <dependency>
+  <groupId>info.kilchhofer.bfh</groupId>
+  <artifactId>robocup-lidar-service</artifactId>
+  <version>20180607.0</version>
+  <classifier>jar-with-dependencies</classifier>
+</dependency>
+\end{lstlisting}
+
+\subsection{Contracts definieren überflüssig}
+Anders als ein Service muss ein Servant keinen spezifischen \Gls{contract} haben. Deshalb definieren ,,leeren'' Contract (Listing \ref{lst:emptyContract}). Eigentlich könnten wir den \path{AyamlServiceContract} direkt verwenden, wenn diese Klasse nicht \path{abstract} wäre. Natürlich können wir dies auch Anonym im Servant selber umsetzen, aber wir machen es analog den Services, damit ist es Projektweit konsistent.
+\begin{lstlisting}[caption={,,leerer Contract'' für den Servant},label={lst:emptyContract}]
+public class ConsoleUIServantContract extends AyamlServiceContract {
+    public ConsoleUIServantContract(String instanceID) {
+        super(ROBOCUP_ROOT_CONTEXT, "Lidar-ConsoleUI-Servant", instanceID);
+    }
+    @Override
+    public void setMessageTopics(Map<String, Class<? extends Message>> map) {
+        // none
+    }
+}
+\end{lstlisting}
+Damit kann der Servant lediglich seinen ConnectionStatus publizieren. Natürlich ist es nicht verboten weiteres anzubieten. Wir könnten beispielsweise für eine Monitoring-Software als Status anbieten, ob sich Servant und Service gefunden haben. Oder wie viele Service-Instanzen der Servant bedient. Für uns reicht es aber vorerst aus, mit dem generischen Contract zu beginnen.
+
+\subsection{Servant Logik implementieren}
+Über den Trick mit \path{new ConsoleUIServiceContract("+").STATUS_CONNECTION} lassen wir uns einen String für den Subscribe-Vorgang generieren, der aufgelöst wie folgt aussieht: \path{Robocup/ConsoleUI/U/+/S/connection}. Das ist also eine Wildcard Subscription. Das heisst, anstelle vom '+' kann alles stehen ausser einem weiteren '/'-Trennzeichen .
+Durch diese Subscription bekommen wir die ConnectionStatus-Infos aus allen Instanzen vom Console-UI-Service. Bei drei Instanzen bekämen wir also die Infos aus beispielsweise folgenden Topics:
+\begin{itemize}
+	\item \path{Robocup/ConsoleUI/U/1234@kicm-fedora.localdomain/S/connection}
+	\item \path{Robocup/ConsoleUI/U/5678@kicm-fedora.localdomain/S/connection}
+	\item \path{Robocup/ConsoleUI/U/9876@kicm-fedora.localdomain/S/connection}
+\end{itemize}
+
+Die Implementierung des eigentlichen Services ist wieder sehr simpel:
+\lstinputlisting[caption={Aufbau TiM55x-UI-Servant},language=Java,label={lst:TiM55x-UI-Servant}]{listings/servant.java}
+
+Der Servant hat nun einige \path{MessageReceivers} mehr als die Services. Grundsätzlich so viele, wie alle Events von den zu bedienenden Services zusammen addiert. Wir wollen ja die publizierten Events und Stati im Servant abonnieren und dem anderen Service im korrekten Format auf den Intent publizieren.
+Schauen wir uns doch mal die einfachen Receiver an:
+\subsubsection{Receiver für den Connection-Status einer ConsoleUI-Instanz}
+\begin{lstlisting}[language=Java,caption={MessageReceiver für die Connection-Status einer ConsoleUI-Instanz},label={lst:servant-uiConnectionStatusReceiver}]
+this.uiConnectionStatusReceiver = new MessageReceiver() {
+    @Override
+    public void messageReceived(String topic, byte[] payload) throws Exception {
+        LOGGER.trace("uiConnectionStatusReceiver Payload: " + new String(payload));
+        ConnectionStatus connectionStatus = gatewayClient.toMessageSet(payload, ConnectionStatus.class).last();
+        ConsoleUIServiceContract uiInstanceContract = new ConsoleUIServiceContract(topic, true);
+
+        LOGGER.info("Instance '{}' is now {}", uiInstanceContract.INSTANCE, connectionStatus.value);
+
+        if (connectionStatus.value.equals("online")) {
+            gatewayClient.readyToPublish(uiInstanceContract.INTENT, new ConsoleIntent("This is a message from the Servant, we now have a connection together.") );
+
+            uiInstances.add(uiInstanceContract);
+            gatewayClient.subscribe(uiInstanceContract.EVENT_KEYPRESS, keyPressReceiver);
+        } else {
+            uiInstances.remove(uiInstanceContract);
+            gatewayClient.unsubscribe(uiInstanceContract.EVENT_KEYPRESS);
+        }
+    }
+};
+\end{lstlisting}
+
+TODO
+\section{}
+TODO
 \label{chap:tim-mock}
 
-\section{TODO}
+\section{EdgeDetection}
+TODO
 

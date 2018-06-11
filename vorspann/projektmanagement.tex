@@ -4,7 +4,7 @@ Diese Bachelorarbeit basiert nicht auf einer Projekt2-Arbeit. Die Bachelorarbeit
 \section{Aufgabenstellung}
 \label{chap:aufgabenstellung}
 Im Dokument 'Bachelorthesis-Aufgabe' ist folgendes festgehalten:
-\begin{quote}
+\begin{formal}
 	Seit mehreren Jahren bestreitet die HFTM unter der Leitung von Alain Rohr mit dem Solidus Team erfolgreich die internationalen Meisterschaften des RoboCups in der 'Logistics League'.
 	Das Team kennt sich meisterlich mit der Ansteuerung der Hardware aus, bittet aber die BFH um Mithilfe beim Software-Engineering.
 	Die Aufgabe dieser Arbeit ist es, ein Software-Design für die einzelnen Komponenten des verwendeten Roboters zu entwerfen. Angelehnt an die Vorgehensweise 'Domain Driven Design' soll konkret anhand des LIDARS gezeigt werden, wie das erarbeitete Software-Design implementiert und genutzt werden soll. Folgende Merkmale soll das Design mindestens aufweisen:
@@ -15,7 +15,7 @@ Im Dokument 'Bachelorthesis-Aufgabe' ist folgendes festgehalten:
 		\item Das Design muss klar vorsehen, dass jedes Jahr das Entwicklungsteam komplett ausgetauscht wird
 	\end{itemize}
 	Bei dieser Arbeit gilt es auch zu beachten, dass die Software-Fähigkeiten des jeweiligen Entwicklungsteams erst noch ausgebildet werden müssen, es also nötig ist, die Schnittstellen so leicht und verständlich wie möglich zu halten, um nicht eine zu steile Lernkurve als Voraussetzung zu erschaffen.
-\end{quote}
+\end{formal}
 
 Aus dieser Eingabe wurden folgende Ziele konkretisiert:
 \subsection{Muss-Kriterien}
@@ -47,11 +47,25 @@ Die Rahmenbedingungen dieses Projektes wurden gemeinsam mit dem Betreuer definie
 	\item Library \path{ch.quantasy.mqtt.gateway} \cite{ch.quantasy.mqtt.gateway} von Reto Koenig als Schnittstelle zum Message-Broker
 \end{itemize}
 
+
 \section{Risikoanalyse}
-TODO
+TODO: Text dazu schreiben
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{img/risikoanalyse-tabelle.pdf}
+	\caption{Risikoanalyse tabellarisch}
+	\label{fig:risikoanalyse-tabelle}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{img/risikoanalyse-matrix.pdf}
+	\caption{Risikomatrix vor und nach ergreifen der Massnahmen}
+	\label{fig:risikoanalyse-matrix}
+\end{figure}
+
 
 \section{Projektplan und Meilensteine}
-TODO
+TODO: Bild vom Google Sheets einfügen am Schluss
 
 \subsection{fixe Termine}
 \begin{table}[H]
@@ -125,6 +139,7 @@ nächste Schritte: Doku
 
 \subsubsection{Treffen mit Reto (Do., 03.05.2018)}
 \begin{itemize}
+	\item Treffen mit Auftraggeber, Experten und Betreuer im Vorfeld nicht nötig (Mail 01. Mai 2018)
 	\item Idee Services über Reference zusammenhängen, ohne die Daten durch den Servant zu schleusen, wenn kompatibel. Der Servant würde den entsprechenden Services das mitteilen.
 	\item Zerreissen der "Library" für EdgeDetection, da Refactoring notwendig (Bsp. Naming der Koordinatensysteme Polar und Kartesisch)
 \end{itemize}
@@ -140,7 +155,11 @@ nächste Schritte: Doku
 	\item Umbenennung: Lidar-Service heisst TIM55x und EdgeDetector heisst 2DEdgeDetector
 \end{itemize}
 
-
+\subsubsection{Treffen mit Reto (Do., 31.05.2018)}
+\begin{itemize}
+	\item Poster Finalisiert
+	\item Book mit einem Wortspiel ergänzen
+\end{itemize}
 
 \subsection{abgesagte Meetings}
 \subsubsection{Treffen mit Reto und Alain (Do., 05.04.2018)}
@@ -150,4 +169,4 @@ abgesagt da Reto krank -> verschoben auf Fr., 13.04.2018, 09:00
 abgesagt da Reto krank -> verschoben auf Do., 26.04.2018, 15:30
 
 \section{Journal}
-TODO: Bild vom Excel einfügen am Schluss
+TODO: Bild vom Google Sheets einfügen am Schluss
