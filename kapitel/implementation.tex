@@ -493,7 +493,38 @@ this.keyPressReceiver = new MessageReceiver() {
     }
 };
 \end{lstlisting}
-TODO
+
+\subsubsection{Receiver für Subscription vom TiM55x-Service}
+Der \ctexttt{MessageReceiver} für den Connection-Status ist Identisch mit dem des anderen Services, ausser dass bei jeder gefundenen Instanz zwei weiteren Subscriptions angehängt wird statt einer:
+\begin{lstlisting}
+if (status.value.equals("online")) {
+    tim55xInstances.add(lidarServiceContract);
+    gatewayClient.subscribe(lidarServiceContract.EVENT_MEASUREMENT, measurementReceiver);
+    gatewayClient.subscribe(lidarServiceContract.STATUS_STATE, tim55xStateReceiver);
+} else {
+    // ... remove and unsubscribe
+}
+\end{lstlisting}
+Bei beiden Receivern passiert im Prinzip das gleiche: Die empfangenen Daten werden in einen String gepackt und als Intent dem Konsolen User Interface gesendet. Schauen wir uns den Sensor-State an, der MessEvent ist identisch, ausser dass wir eine ArrayListe in einen String verpacken müssen, weil 270 Messwerte auf einmal in einer Liste ankommen.
+\begin{lstlisting}
+this.tim55xStateReceiver = new MessageReceiver() {
+    @Override
+    public void messageReceived(String topic, byte[] payload) throws Exception {
+        LOGGER.trace("STATUS_STATE Payload: " + payload);
+        Set<LidarState> lidarStates = gatewayClient.toMessageSet(payload, LidarState.class);
+
+        // alle Statusaenderungen anzeigen, wenn beispielsweise ein Burst von Messages ankommt
+        for (LidarState lidarState : lidarStates) {
+            ConsoleIntent tempConsoleIntent = new ConsoleIntent("Sensor " + lidarState.state);
+
+            // jeder UI-Instanz publizieren
+            for (ConsoleUIServiceContract instance : uiInstances) {
+                gatewayClient.readyToPublish(instance.INTENT, tempConsoleIntent);
+            }
+        }
+    }
+};
+\end{lstlisting}
 
 \section{TiM55x Mock}
 \label{chap:tim-mock}

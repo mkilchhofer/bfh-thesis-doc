@@ -226,12 +226,44 @@ Beispiele die sich auf den entwickelten Code beziehen gibt es im Abschnitt mit d
 
 \subsection{Publish / Subscribe vs. Request / Response}
 \label{sec:publish-subscribe}
-
+Der Unterschied zu den heute weit verbreiteten Microservices mit HTTP ist bei \acrshort{mqtt} das so genannte PubSub-Pattern. Bei diesem Pattern wird nicht wie bei HTTP bei einem Service etwas angefragt, worauf dieser unmittelbar danach eine Antwort gibt (Reqest / Response). Sondern wir abonnieren uns bei einer zentralen Stelle (dem \acrshort{mqtt}-Broker) auf ein bestimmtes Topic (ähnlich einem REST API in der HTTP-Welt) und erhalten je nach Topic erstmals keine Antwort. Sobald jemand (hier ein Service) auf dieses Topic beim \acrshort{mqtt}-Broker Daten publiziert, stellt der Broker diese Nachricht an uns durch. Abonniert man auf ein Topic, auf das zuletzt Daten mit gesetztem "Retain"-Flag im Protokoll-Header publiziert wurden, stellt uns der Broker diese Nachricht unmittelbar nach dem subscribe-Vorgang zu.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{img/mqtt-basics-by_hivemq.png}
 	\caption{Schaubild zum Publish- / Subscribe-Vorgang in MQTT Quelle: \cite{hivemq.com-mqtt-essentials-publish-subscribe}}
-	\label{fig:junit-example}
+	\label{fig:pubsub-example}
 \end{figure}
+Das obige Bild (\ref{fig:pubsub-example}) zeigt wie Clients (egal ob publizierende oder abonnierende) mit dem Broker eine Verbindung haben. Die beiden Abonnenten auf der rechten Seite interessieren sich für die Temperatur und müssen im Programmcode einen so genannten Callback / Listener an die Subscription anhängen. Sobald der Client auf der linken Seite im Bild nun wie in diesem Beispiel die Temperatur-Daten bereitstellt (publiziert), wird der Broker diese an die angemeldeten beiden Abonnenten zustellen.
 
-TODO - Stichworte: \acrshort{mqtt}, Broker, Client, publish, subscribe
+\section{Ausführung der fertigen Artefakte}
+Die fertigen Artefakte (die Jars) der Services, die aus dem Maven-Prozess rauskommen lassen sich auf dem Ubuntu-Linux des Roboters einfach als System-Dienst über den SystemD starten. Dazu wird pro auszuführenden Service eine Datei mit folgendem Inhalt hingelegt:
+\begin{lstlisting}
+$ cat cat /etc/systemd/system/robocup-<name>.service 
+[Unit]
+Description=LiDAR microservice
+Requires=mosquitto.service
+After=network.target mosquitto.service
+
+[Service]
+ExecStart=/usr/bin/java -jar /usr/share/robocup/positioning/robocup-lidar-service-20180612-jar-with-dependencies.jar
+
+[Install]
+WantedBy=multi-user.target
+\end{lstlisting}
+
+Für die Linux-Einsteiger könnten nachfolgende Befehle aus Tabelle \ref{tab:linuxCommands} nützlich sein.
+\begin{table}[H]
+	\centering
+	\begin{tabular}{p{7cm}p{8cm}} \toprule
+	\textbf{Befehl}					& \textbf{Beschreibung}						\\ \midrule
+	\texttt{systemctl daemon-reload}		& Die Dateien im Ordner \ctexttt{/etc/systemd/system/..} neu einlesen nach dem Bearbeiten.\\ \midrule
+	\texttt{systemctl status <name>.service}	& Status anzeigen						\\ \midrule
+	\texttt{systemctl enable <name>.service} 	& Autostart aktivieren						\\ \midrule
+	\texttt{systemctl disable <name>.service} 	& Autostart deaktivieren					\\ \midrule
+	\texttt{systemctl start <name>.service} 	& Dienst starten						\\ \midrule
+	\texttt{systemctl stop <name>.service} 		& Dienst beenden						\\ \midrule
+	\texttt{journalctl -f -u <name>.service} 	& Logs zu einem Dienst anzeigen. Der Parameter \ctexttt{-f} behält die Datei offen und zeigt kontinuierlich (live) neue Logzeilen an.\\ \bottomrule
+	\end{tabular}
+	\caption{Nützliche Linux-Befehle}
+	\label{tab:linuxCommands}
+\end{table}
