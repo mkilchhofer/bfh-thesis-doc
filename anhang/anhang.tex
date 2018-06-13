@@ -1,10 +1,10 @@
 \chapter{Transitions-Phase Stand Heute zu Microservices}
 \section{Git}
 \label{chap:tranition-git}
-Die \acrshort{hftm} stellte dem Betreuer in einem eigenen Git-Repository den Sourcecode bereit. Diesen habe ich anschliessend als Zip-Datei via E-Mail erhalten. Während dieser Arbeit (am 16. April) habe ich lesenden Zugriff auf das Git-Repository der \acrshort{hftm} erhalten\cite{gitlab.com/solidus/hefei}. 
+Die \acrshort{hftm} stellte dem Betreuer in einem eigenen Git-Repository den Sourcecode bereit. Diesen habe ich anschliessend als Zip-Datei via E-Mail erhalten. Während dieser Arbeit (am 16. April) habe ich lesenden Zugriff auf das Git-Repository der \acrshort{hftm} erhalten \cite{gitlab.com/solidus/hefei}. 
 
 \subsection{Ist-Zustand}
-Beim Betrachten des eingecheckten Codes ist aufgefallen, dass beide Code-Repos Projekt-Files der \acrshort{ide} beinhalten. Teils zeigen bei solchen Daten Pfade gegen das User-Home des Commiters. Auch sind Log-Dateien und Libraries/Abhängigkeiten (lib / Jar-Files) im Git des Projekts eingecheckt (siehe Listing \ref{lst:gitlab-listing}). 
+Beim Betrachten des eingecheckten Codes ist aufgefallen, dass beide Code-Repos Projekt-Files der \acrshort{ide} beinhalten. Teils zeigen bei solchen Daten Pfade gegen das User-Home des Commiters. Auch sind Log-Dateien und Libraries / Abhängigkeiten (lib / Jar-Files) im Git des Projekts eingecheckt (siehe Listing \ref{lst:gitlab-listing}). 
 \begin{lstlisting}[caption={Listing der Daten im Git-Repository 'gitlab.com/solidus/hefei'},language=Bash, columns=fixed,label={lst:gitlab-listing}]
 $ du -sch .[!.]* *
 17M	.git
@@ -24,7 +24,7 @@ $ du -sch .[!.]* *
 \subsection{Soll-Zustand}
 Auf den \verb|lib|-Ordner kann komplett verzichtet werden, sobald Dependencies über Maven verwaltet werden (siehe Kapitel \ref{chap:voraussetzungen} und \ref{chap:maven}). Libraries werden nicht erneut als binäres Jar-File ins Git/\acrshort{vcs}\footnote{Version Control System} hochgeladen. Der Sourcecode einer Library bleibt ebenfalls nur im \acrshort{vcs} der jeweiligen Entwickler.
 
-Die Ordner \path{logs} und \path{nbproject} können einfach in der \path{.gitignore}-Datei auf die Blacklist gesetzt werden. Logs gehören grundsätzlich nicht ins \acrshort{vcs} und die \acrshort{ide}-spezifischen Daten werden über Maven oder die Entwicklungsumgebung selbst beim Öffnen des Projekts automatisch erstellt. Das Projekt kann vollständig in Maven definiert werden (Bsp. die Main-Klassen, Compiler-Version).
+Die Ordner \ctexttt{logs} und \ctexttt{nbproject} können einfach in der \ctexttt{.gitignore}-Datei auf die Blacklist gesetzt werden. Logs gehören grundsätzlich nicht ins \acrshort{vcs} und die \acrshort{ide}-spezifischen Daten werden über Maven oder die Entwicklungsumgebung selbst beim Öffnen des Projekts automatisch erstellt. Das Projekt kann vollständig in Maven definiert werden (Bsp. die Main-Klassen, Compiler-Version).
 
 \subsection{Git Commit Message Guidelines}
 Die Git Commit Nachrichten (\url{https://gitlab.com/solidus/hefei/}) halten sich nicht an die ,,Commit Guidelines'' von \href{https://git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project}{git-scm.com} \cite{git-scm.com-guide}. Die Commit Message sollte nach folgender Vorlage aufgebaut sein:
@@ -50,11 +50,11 @@ Further paragraphs come after blank lines.
 
 \end{lstlisting}
 \end{quote}
-Die erste Zeile mit Richtwert 50 Zeichen ist die, die auf Gitlab.com und im Git CLI als Zusammenfassung auftaucht. Die History mit dem CLI-Befehl '\verb|git log --oneline|' sieht an vielen Stellen so aus:
+Die erste Zeile mit Richtwert 50 Zeichen ist die, die auf Gitlab.com und im Git CLI als Zusammenfassung auftaucht. Die History mit dem CLI-Befehl \ctexttt{git log --oneline} sieht an vielen Stellen so aus:
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1.0\textwidth]{img/git-commit-message-2.png}
-	\caption{Aktuelle Git Commit History}
+	\includegraphics[width=1.0\textwidth]{img/git-commit-message.png}
+	\caption{Aktuelle Git Commit History im Repository der HFTM}
 	\label{fig:git-commit-message}
 \end{figure}
 Die Umgewöhnung ist denkbar eifach:
@@ -68,14 +68,14 @@ Die Umgewöhnung ist denkbar eifach:
 \section{Programmcode}
 Beim Betrachten des Programmcodes im Gitlab-Repo der \acrshort{hftm} sind folgende Dinge aufgefallen:
 \subsection{Testen der Klassen}
-In sehr vielen Klassen gibt es eine Main-Methode um diese zu testen. Dabei weis meist nur der Entwickler, was passieren soll, wenn der Code ausgeführt wird. Besser wäre hier definitiv die Umstellung auf einen Unit-Test (siehe Abschnitt \ref{sec:tests_and_unittests}). Da ist es dann für den neuen Entwickler klar: laufen die Tests erfolgreich durch, ist alles gut. Zudem kann es durch eine Build-Automatisierung automatisiert werden.
+In sehr vielen Klassen gibt es eine Main-Methode um diese zu testen. Dabei weiss meist nur der Entwickler, was passieren soll, wenn der Code ausgeführt wird. Besser wäre hier definitiv die Umstellung auf einen Unit-Test (siehe Abschnitt \ref{sec:tests_and_unittests}). Da ist es dann für den neuen Entwickler klar: laufen die Tests erfolgreich durch, ist alles gut. Zudem kann es durch eine Build-Automatisierung automatisiert werden.
 
 \subsection{Abkürzungen}
 An vielen Stellen werden Methoden und Variablen unglücklich abgekürzt. Hier einige Beispiele:
 \begin{itemize}
-	\item Variable für den Java-Util-Logger heisst '\path{ecm}'
-	\item Klasse \path{CoordCalc.java}, Methode: \path{calcCoords(IScanReflectData scanMeasData)} \\ -> Liest man den Source-Code wird es klar, die Klasse rechnet Koordinaten von polar auf kartesisch um. Also würde ich die gleich so benennen: \path{PolarToCartesian.calculate(...)}. Oder zumindest per Java-Doc dokumentieren, was die Klasse macht.
-	\item Die Methode \path{calculateDistanceMMToGUIPx(int mm)} würde ich zu \path{calculateMillimeterToPixel} umbenennen.
+	\item Variable für den Java-Util-Logger heisst \ctexttt{ecm}
+	\item Klasse \ctexttt{CoordCalc.java}, Methode: \ctexttt{calcCoords(IScanReflectData scanMeasData)} \\ -> Liest man den Source-Code wird es klar, die Klasse rechnet Koordinaten von polar auf kartesisch um. Also würde ich die gleich so benennen: \ctexttt{PolarToCartesian.calculate(...)}. Oder zumindest per Java-Doc dokumentieren, was die Klasse macht.
+	\item Die Methode \ctexttt{calculateDistanceMMToGUIPx(int mm)} würde ich zu \ctexttt{calculateMillimeterToPixel} umbenennen.
 \end{itemize}
 Zusammenfassend meine Empfehlung: Klassen und Methoden nicht abkürzen vor allem wenn diese noch public sind. Sinnvolle Namen für die Variablen verwenden und diese auch nicht abkürzen.
 

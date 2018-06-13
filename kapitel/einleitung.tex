@@ -33,6 +33,13 @@ Es spielen zwei Teams gegeneinander mit jeweils 3 Robotern. Auf dem  Spielfeld (
 	\caption{Spielfeld mit möglicher Aufstellung der Maschinen: Quelle: robotics-erlangen.de \cite{robotics-erlangen.de}}
 	\label{fig:robocup_spielfeld}
 \end{figure}
+Am einem Wettbewerb sieht es beispielsweise wie folgt aus:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\textwidth]{img/robocup-in-action.jpg}
+	\caption{Blick aufs Spielfeld während dem Wettbewerb Quelle: carologistics.org \cite{carologistics-blog}}
+	\label{fig:robocup_spielfeld-real}
+\end{figure}
 
 Die verwendeten Roboter in dieser Liga basieren auf der ,,Robotino''-Plattform  von Festo (Abbildung \ref{fig:robotino}), die den Wettbewerb auch mit den Maschinen und anderem sponsern. Auf dieser Roboterplattform können verschiedene Sensoren, Aktoren und Computer-Systeme angebaut werden.
 \begin{figure}[H]
@@ -67,7 +74,7 @@ Der TiM5xx sendet mit einer Laserdiode gepulste Laserstrahlen aus. Trifft ein so
 Mit einem rotierenden Spiegel lenkt der TiM5xx die ausgesendeten Laserstrahlen ab und tastet damit die Umgebung radial ab. Die Messungen werden intern von einem Winkelkodierer in regelmässigen Winkelschritten ausgelöst. Eine komplette Rotation stellt einen Messvorgang (Scan) dar. Der TiM5xx arbeitet mit einer Scanfrequenz von 15 Hz, d. h. er durchläuft 15 Messvorgänge pro Sekunde und stellt die Messergebnisse fortlaufend in Echtzeit über die Ethernet-Schnittstelle zur Verfügung.
 \end{formal}
 
-Wir erhalten also von diesem Sensor 15 Mal Sekunde eine komplette Messung mit 270 Distanzen und der dazugehörigen Genauigkeit. Diese Messwerte sind wie im Datenblatt beschrieben wie folgt zu verstehen: Der erste Messwert erhalten wir bei -45° und der letzte bei 225° (siehe dazu Abbildung \ref{fig:lidar}). Der TiM55x-Sensor ist an der Robotino-Plattform so verbaut, dass 90° vorne entspricht. Weshalb der Hersteller negative Werte im Koordinatensystem verwendet hinterfragen wir nicht weiter. Die zu entwickelnde Software soll also genau diesen Winkel-Bereich zur Verfügung stellen - so steht er auch im Datenblatt.
+Wir erhalten also von diesem Sensor 15 Mal pro Sekunde eine komplette Messung mit 270 Distanzen und der dazugehörigen Genauigkeit. Diese Messwerte sind wie im Datenblatt beschrieben wie folgt zu verstehen: Den ersten Messwert erhalten wir bei -45° und den letzten bei 225° (siehe dazu Abbildung \ref{fig:lidar}). Der TiM55x-Sensor ist an der Robotino-Plattform so verbaut, dass 90° vorne entspricht. Weshalb der Hersteller negative Werte im Koordinatensystem verwendet hinterfragen wir nicht weiter. Die zu entwickelnde Software soll also genau diesen Winkel-Bereich zur Verfügung stellen - so steht er auch im Datenblatt.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.5\textwidth]{img/lidar-coordinate.png}

@@ -44,12 +44,12 @@ Reto soll noch die Liste komplettieren
 Die Rahmenbedingungen dieses Projektes wurden gemeinsam mit dem Betreuer definiert:
 \begin{itemize}
 	\item Source-Code für \acrshort{lidar}-Ansteuerung von \acrshort{hftm}, verwenden als Library
-	\item Library \path{ch.quantasy.mqtt.gateway} \cite{ch.quantasy.mqtt.gateway} von Reto Koenig als Schnittstelle zum Message-Broker
+	\item Library \ctexttt{ch.quantasy.mqtt.gateway} \cite{ch.quantasy.mqtt.gateway} von Reto Koenig als Schnittstelle zum Message-Broker
 \end{itemize}
 
 
 \section{Risikoanalyse}
-TODO: Text dazu schreiben
+Nachfolgende Tabelle zeigen die eruierten Risiken während der Bachelorarbeit vor und nach dem Ergreifen der entsprechenden Massnahmen. \\ Das grösste Risiko ist das seit einer Weile das mangelnde Personal beim Arbeitgeber und gleichzeitige Rollout eines dezentralen Grossprojekts, was mich die nächsten 2 Jahre fordern wird. Trotzdem konnte mit dem Team abgemacht werden, Donnerstag und Freitag voll für die Thesis zur Verfügung zu haben und nur in Ausnahmefällen für die Firma zu arbeiten.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{img/risikoanalyse-tabelle.pdf}
@@ -65,7 +65,30 @@ TODO: Text dazu schreiben
 
 
 \section{Projektplan und Meilensteine}
-TODO: Bild vom Google Sheets einfügen am Schluss
+\subsection{Meilensteine}
+Als Meilensteine wurden lediglich die Termine mit fester Deadline festgelegt.
+\begin{table}[H]
+	\centering
+	\begin{tabular}{llp{11cm}p{2cm}} \toprule
+		\textbf{\#} 			& \textbf{Termin}	& \textbf{Beschreibung}	& \textbf{Erledigt}	\\ \midrule
+		M1 & 08.03. & \textbf{Konzept verstanden} \newline Konzept verstehen vom GatewayClient, einfacher Service implementiert	& 08.03\\ \midrule
+		M2 & 18.03. & \textbf{Referenzsetup fertiggestellt}\newline  Referenz-Setup mit 2x Service und 1x Servant, bereit um am Experten und Auftraggeber zu zeigen & 17.03.	\\ \midrule
+		M3 & 01.06. & \textbf{Book und Poster}\newline  Plakat und Book fertig für die Abgabe & 01.06	\\ \midrule				
+		M4 & 07.06. & \textbf{Dokumentation dem Auftraggeber vorlegen}\newline  Inhalt für Bericht soweit fertig, dass der Auftraggeber noch letzte Wünsche anbringen kann.& Feedback am 12.06.	\\ \midrule
+		M5 & 14.06. & \textbf{Finish}\newline Bericht finalisiert, gedruckt, Code auf Github, Präsentation vorbereitet.	\\ \bottomrule
+	\end{tabular}
+	\caption{Meilensteine}
+	\label{tab:meilensteine}
+\end{table}
+
+\subsection{Sprints}
+Das Projekt wurde mit einer agilen Methode entwickelt, da zu Beginn der Arbeit nicht hundertprozentig klar war, wohin die Reise genau führt. Weil ich vom Job her bereits damit vertraut bin, wurde als Methode  Scrum in einer ,,Light''-Variante gewählt. Jedoch wurde auf die Toolschlacht, Sprint-Retrospektive und Co. verzichtet. Nachfolgend werden lediglich die auszuführenden Tasks aufgeführt:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{img/sprintplanung.pdf}
+	\caption{Sprintplanung tabellarisch}
+	\label{fig:sprintplanung-tabelle}
+\end{figure}
 
 \subsection{fixe Termine}
 \begin{table}[H]
@@ -80,7 +103,7 @@ TODO: Bild vom Google Sheets einfügen am Schluss
 		Fr., 22.06.2018			& Abgabe Film				& hochladen in Moodle		\\ \midrule
 		Mi., 27.06.2018, 10:00 - 12:00	& Verteidigung				&				\\ \bottomrule
 	\end{tabular}
-	\caption{fixe Termine während der Bachelorarbeit}
+	\caption{Fixe Termine während der Bachelorarbeit}
 	\label{tab:fixeTermine}
 \end{table}
 
@@ -107,35 +130,34 @@ Ziele: Lernbuch für HFTM (entweder in Doku integriert oder extern)
 
 
 \subsubsection{Treffen mit Reto (Do., 08.03.2018)}
-Erste Schritte mit dem GatewayClient gezeigt (LidarService). Weitere Schritte:
 \begin{itemize}
-	\item Servant und kleiner UI-Service (console writer) implementieren
-	\item Danach Dokumentieren der ersten Erkenntnisse
-	\item Vorschlag für Treffen mit Experten (Dr. Joachim Wolfgang Kaltz)
+	\item Erste Schritte mit dem GatewayClient gezeigt (LidarService).
 \end{itemize}
+nächste Schritte: Servant und kleiner UI-Service (Konsolen Interface) implementieren, danach Dokumentieren der ersten Erkenntnisse, Vorschlag für Treffen mit Experten (Dr. Joachim Wolfgang Kaltz)
 \subsubsection{Treffen mit Experte (Mo., 19.03.2018)}
 \begin{itemize}
 	\item Vorhaben erklärt, HFTM und Studenten erläutert
 	\item Experte ist einverstanden: die Arbeit könne gut ein Handbuch für die Studenten der HFTM sein. Kein Problem.
 	\item Referenz-Setup mit den zwei Services und dem Servant gezeigt (Lidar, Console Client, Servant)
 \end{itemize}
-Weitere Schritte: Weiteres Meeting mit Experte, Alain und Reto Mitte Mai.
+nächste Schritte: Weiteres Meeting mit Experte, Alain und Reto Mitte Mai.
 \subsubsection{Treffen mit Reto (Do., 22.03.2018)}
 nächste Schritte: Doku
 
 \subsubsection{Treffen mit Reto und Alain (Do., 13.04.2018)}
 \begin{itemize}
 	\item Zugriff auf aktuellen Sourcecode vom Roboter erhalten (auf gitlab.com \cite{gitlab.com/solidus/hefei})
-	\item Niveau ist nicht sehr hoch, darf die Studenten nicht gleich überfordern. Java wird in 34 Lektionen vor dem Arbeiten am Robocup erst ausgebildet. Vorher haben die Meisten noch nie objektorientiert programmiert.
-	\item Robi hat Intel i5-Basierter PC drauf (also doch kein Raspi) = ebenbürdig mit meinem Lenovo Yoga 2 Pro
+	\item Programmier-Niveau ist nicht sehr hoch und darf die Studenten nicht gleich überfordern. Java wird in 34 Lektionen vor dem Arbeiten am Robocup erst ausgebildet. Vorher haben die Meisten noch nie objektorientiert programmiert.
+	\item Robi hat Intel i5-Basierter PC drauf (also doch kein Raspi) => ebenbürdig mit meinem Lenovo Yoga 2 Pro
 \end{itemize}
 
 \subsubsection{Treffen mit Reto (Do., 26.04.2018)}
 \begin{itemize}
+	\item Profiling angesprochen
 	\item Alternativen mit "Kein Gluelayer"/Servant innerhalb einer Domain ansprechen, aber weiter wie bisher: zwischen jedem Service gibt es den Servant.
 	\item Wenn es im Servant zu Ressourcen-Problemen kommt, verwenden wir eine andere Struktur als YAML/JSON (Bsp. Google's Protocol buffers)
-	\item nächste Schritte: Doku, Linien-Finder anschauen, Testing
 \end{itemize}
+nächste Schritte: Doku, Linien-Finder anschauen, Testing
 
 \subsubsection{Treffen mit Reto (Do., 03.05.2018)}
 \begin{itemize}
@@ -148,10 +170,10 @@ nächste Schritte: Doku
 \begin{itemize}
 	\item Architekturbild (Datenfluss löschen und beim anderen Architekturbild bleiben)
 	\item erklären weshalb nur der letzte LidarIntent genommen wird
-	\item zwei Dokument-"Parts": transition und setup (erklären weshalb)
-	\item pushen vom EdgeDetector - Stand heute
-	\item Adapter auf Service ändern
-	\item Annotations einführen für Contract
+	\item zwei Dokument-"Parts": Transition im Anhang und Setup/Grundlagen im Hauptteil (erklären weshalb)
+	\item Pushen vom EdgeDetector - Stand heute, Reto schaut mal rein.
+	\item Wording: 'Adapter' auf 'Service' ändern
+	\item Annotations einführen für Contract / extends AValidator
 	\item Umbenennung: Lidar-Service heisst TIM55x und EdgeDetector heisst 2DEdgeDetector
 \end{itemize}
 

@@ -43,12 +43,13 @@
 \usepackage[
 	backend=biber,
 	style=numeric,
-	sorting=ynt
+	sorting=anyt
 ]{biblatex}
 \addbibresource{datenbanken/references.bib}
 
 \usepackage[toc, acronym]{glossaries}
 \usepackage{glossaries}
+\usepackage{keystroke}
 %---------------------------------------------------------------------------
 
 % Load Math Packages
@@ -75,6 +76,7 @@
 \definecolor{bfhgrey}{rgb}{0.41,0.49,0.57}      % BFH grey
 %\definecolor{linkcolor}{rgb}{0,0,0.8}     	% Blue for the web- and cd-version!
 \definecolor{linkcolor}{rgb}{0,0,0}        	% Black for the print-version!
+
 %---------------------------------------------------------------------------
 
 % Listings Packages ausserhalb "BFH Standard"
@@ -87,6 +89,7 @@
 \definecolor{listing-comment}{rgb}{0.65,0.65,0.65}
 \definecolor{asparagus}{rgb}{0.53, 0.66, 0.42}
 \definecolor{ao(english)}{rgb}{0.0, 0.5, 0.0}
+\definecolor{verbatimcolor}{gray}{0.93}
 \lstset{
 	basicstyle=\small\ttfamily,
 	language=Java,
@@ -122,6 +125,8 @@
 	keywordstyle=\color{blue},
 	morekeywords={xmlns,groupId,artifactId,packaging,classifier,version,type}
 }
+
+\newcommand{\ctexttt}[1]{\colorbox{verbatimcolor}{\texttt{#1}}}
 
 %---------------------------------------------------------------------------
 
@@ -277,16 +282,16 @@
 \include{kapitel/probleme}
 \include{kapitel/ausblick}
 \include{vorspann/projektmanagement}
-
 %---------------------------------------------------------------------------
 
-% Selbständigkeitserklärung
+% Attachment:
 %---------------------------------------------------------------------------
-%\cleardoublepage
-%\phantomsection 
-\addcontentsline{toc}{chapter}{Selbständigkeitserklärung}
-\pagenumbering{Roman}
-\include{anhang/selbstaendigkeitserklaerung}
+\appendix
+\settocdepth{section}
+\include{anhang/anhang}
+%---------------------------------------------------------------------------
+
+
 
 %---------------------------------------------------------------------------
 
@@ -300,6 +305,7 @@
 
 % Glossar ausgeben
 \printglossary[title=Glossar]
+\pagenumbering{Roman}
 
 % Abkuerzungen ausgeben
 \printglossary[type=\acronymtype, title=Abkürzungsverzeichnis]
@@ -339,12 +345,12 @@
 % Hello World\index{Hello World}
 %---------------------------------------------------------------------------
 
-% Attachment:
+% Selbständigkeitserklärung
 %---------------------------------------------------------------------------
-\appendix
-\settocdepth{section}
-\include{anhang/anhang}
-%---------------------------------------------------------------------------
+%\cleardoublepage
+%\phantomsection 
+\addcontentsline{toc}{chapter}{Selbständigkeitserklärung}
+\include{anhang/selbstaendigkeitserklaerung}
 
 %---------------------------------------------------------------------------
 \end{document}

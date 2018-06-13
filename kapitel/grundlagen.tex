@@ -2,7 +2,7 @@
 \label{chap:voraussetzungen}
 Dieses Kapitel soll oberflächlich einige Dinge erklären, die für diese Arbeit vorausgesetzt werden.
 \section{Git}
-Als \Gls{vcs} setzen wir Git ein. Ins Git gehört jeglicher entwickelte Code, nicht aber Artefakte (gebuildeter Code) und IDE spezifische Einstellungen. Die entsprechenden Verzeichnisse müssen wir also in die \path{.gitignore}-Datei aufnehmen. Wir werden verschiedene Git Repositories verwenden für die verschiedenen Teilgebiete des Roboters, also die Domänen. Die Domänen sind wie in nachfolgender Tabelle \ref{tab:gitRepositories} unterteilt:
+Als \Gls{vcs} setzen wir Git ein. Ins Git gehört jeglicher entwickelte Code, nicht aber Artefakte (gebuildeter Code) und IDE spezifische Einstellungen. Die entsprechenden Verzeichnisse müssen wir also in die \ctexttt{.gitignore}-Datei aufnehmen. Wir werden verschiedene Git Repositories verwenden für die verschiedenen Teilgebiete des Roboters, also die Domänen. Die Domänen sind wie in nachfolgender Tabelle \ref{tab:gitRepositories} unterteilt:
 \begin{table}[H]
 	\centering
 	\begin{tabular}{lp{13cm}} \toprule
@@ -33,7 +33,7 @@ Maven ist ein Tool um den Build-Prozess von Software zu unterstützen. Es bietet
 Um Maven zu verwendet erstellt man in der verwendeten Entwicklungsumgebung (\acrshort{ide}) ein 'Maven-Projekt'. Zentral in einem Maven-Projekt ist die Datei \texttt{pom.xml} (\acrshort{pom} steht für \acrlong{pom}). Sie definiert wie oben erläutert die Umgebung für das Java-Projekt.
 
 \subsection{Dependencies}
-Maven verwendet so genannte Repositores um Libraries anzuziehen. Repositories können vom Typ LOCAL oder REMOTE sein. Wie die Namen vermuten lassen befindet sich ein Lokales Repository auf dem Entwickler-PC und ein Remote Repository im Internet/Netzwerk. Libraries bzw. Dependencies sucht man beispielsweise auf \href{https://mvnrepository.com/}{mvnrepository.com} oder \href{https://search.maven.org}{search.maven.org}, der so genannten 'Maven Central'. Alle Libaries in diesem Repository kennt Maven automatisch und kann diese herunterladen. Heruntergeladen werden die Libraries (als Jar paketiert) in das lokale Repository, also in den Ordner \texttt{.m2} im Home-Verzeichnis des ausführenden Benutzers. In dieser Arbeit ist das also \path{/home/mkilchhofer/.m2/repository} (Fedora Linux) und unter Windows wird das in \path{C:\Users\mkilchhofer\.m2\repository} sein.
+Maven verwendet so genannte Repositores um Libraries anzuziehen. Repositories können vom Typ LOCAL oder REMOTE sein. Wie die Namen vermuten lassen befindet sich ein Lokales Repository auf dem Entwickler-PC und ein Remote Repository im Internet/Netzwerk. Libraries bzw. Dependencies sucht man beispielsweise auf \href{https://mvnrepository.com/}{mvnrepository.com} oder \href{https://search.maven.org}{search.maven.org}, der so genannten 'Maven Central'. Alle Libaries in diesem Repository kennt Maven automatisch und kann diese herunterladen. Heruntergeladen werden die Libraries (als Jar paketiert) in das lokale Repository, also in den Ordner \texttt{.m2} im Home-Verzeichnis des ausführenden Benutzers. In dieser Arbeit ist das also \ctexttt{/home/mkilchhofer/.m2/repository} (Fedora Linux) und unter Windows wird das in \ctexttt{\path{C:\Users\mkilchhofer\.m2\repository}} sein.
 
 Als kurzes Beispiel hier eine Demonstration zur Einbindung von Log4j2.
 \begin{enumerate}
@@ -152,29 +152,29 @@ Durch das Auswählen der jeweiligen Maven Lifecycle-Phase mit anschliessendem Dr
 	\centering
 	\begin{tabular}{lp{13cm}} \toprule
 		\textbf{Lifecycle} & \textbf{Beschreibung}\\ \midrule
-		\texttt{clean}     & Alle generierten Objekte (namentlich 'Artefakte') und das Verzeichnis '\path{target}' werden gelöscht.\\ \midrule
+		\texttt{clean}     & Alle generierten Objekte (namentlich 'Artefakte') und das Verzeichnis \ctexttt{target} werden gelöscht.\\ \midrule
 		\texttt{validate}  & Validieren ob alle Projekt-Infos vorhanden und korrekt sind (vor allem pom.xml prüfen).\\ \midrule
-		\texttt{compile}   & Kompiliert den Source-Code des Projekts. Syntax-Fehler im Verzeichnis '\path{src/main/..}' lassen diese Phase Fehlschlagen. Die Tests aus dem Verzeichnis '\path{src/test/..}' werden in dieser Phase noch nicht berücksichtigt. Syntax-Fehler in den Unit-Tests beeinflussen das erfolgreiche Abschliessen dieser Phase nicht.\\ \midrule
+		\texttt{compile}   & Kompiliert den Source-Code des Projekts. Syntax-Fehler im Verzeichnis \ctexttt{src/main/..} lassen diese Phase Fehlschlagen. Die Tests aus dem Verzeichnis \ctexttt{src/test/..} werden in dieser Phase noch nicht berücksichtigt. Syntax-Fehler in den Unit-Tests beeinflussen das erfolgreiche Abschliessen dieser Phase nicht.\\ \midrule
 		\texttt{test}	   & Führt die Tests gegen den kompilierten Source-Code aus. Diese Tasks endet erfolgreich, wenn die Syntax aller Tests fehlerfrei sind und die Tests erfolgreich durchgeführt werden können.\\ \midrule
 		\texttt{package}   & Paketiert den generierten Byte-Code in ein verteilbares Archiv (Bsp. Jar)\\ \midrule
-		\texttt{verify}	   & Prüft die paketierten Datein mittels Integrations-Tests.\\ \midrule
-		\texttt{install}   & Kopiert die paketierten Dateien in das lokale Maven Repository (\path{.m2}-Ordner), um diese als Abhängigkeit in anderen lokalen Projekten zu benutzen.\\ \midrule
+		\texttt{verify}	   & Prüft die paketierten Dateien mittels Integrations-Tests.\\ \midrule
+		\texttt{install}   & Kopiert die paketierten Dateien in das lokale Maven Repository (\ctexttt{.m2}-Ordner), um diese als Abhängigkeit in anderen lokalen Projekten zu benutzen.\\ \midrule
 		\texttt{site}      & Generiert eine Projekt-Website (heute nicht sehr relevant) \\ \midrule
-		\texttt{deploy}	   & Kopiert das generierte Artefakt in ein remote Maven Repository (gleich wie \texttt{install}, nur eben Remote. So ist die entwickelte Library auch für andere verfügbar.)				\\ \bottomrule
+		\texttt{deploy}	   & Kopiert das generierte Artefakt in ein remote Maven Repository (gleich wie \ctexttt{install}, nur eben Remote. So ist die entwickelte Library auch für andere verfügbar.)				\\ \bottomrule
 	\end{tabular}
 	\caption{Basic Lifecycle-Phasen in Maven. Quelle: \href{https://maven.apache.org}{maven.apache.org} \cite{maven-build-lifecycle} }
 	\label{tab:mavenLifecycle}
 \end{table}
 
-Durch die Verwendung von Maven kann zudem in einem weiteren Schritt der Build-Prozess mit einer Build-Pipeline automatisiert werden. Dies ist möglich, weil im POM alles Nötige spezifiziert wird. Das heisst, wir müssen auf einer neu installierten Umgebung (selbstverständlich mit JDK und Maven vorinstalliert) lediglich folgende Kommandos ausführen und wir haben unsere fertigen Jars:
+\subsection{Build Automatisierung (continuous integration)}
+Durch die Verwendung von Maven kann zudem in einem weiteren Schritt der Build-Prozess mit einer Build-Pipeline automatisiert werden. Dies ist möglich, weil im POM alles Nötige spezifiziert ist. Das heisst, wir müssen auf einer neu installierten Umgebung (selbstverständlich mit JDK und Maven vorinstalliert) lediglich folgende Kommandos ausführen und wir haben unsere fertigen Jars:
 \begin{lstlisting}[language={none}]
 $ git clone <url>/<Unser Git Reposiory>
 $ cd <Unser Git Reposiory>
 $ mvn clean package
 \end{lstlisting}
 
-\subsection{Build Automatisierung (continuous integration)}
-Die Projekte aus dieser Arbeit verwenden zur Build-Automatisierung \textbf{Travis CI}\footnote{Travis CI: \url{https://travis-ci.org}} und als Ablage bzw. Maven Repository der Artefakte (Jars) \textbf{JFrog Bintray}\footnote{JFrog Bintray: \url{https://bintray.com}}. Wie das ganze konfiguriert wird ist nicht Teil dieser Arbeit, jedoch in den jeweiligen Teil-Projekten in den Dateien \path{.travis.yml}, \path{.travis.revision.sh} und \path{.travis.settings.xml} ersichtlich. \\ Vermutlich werden für den RoboCup sowieso nur Teile davon als Open Source veröffentlicht und deshalb können diese Anbieter nicht unverändert verwendet werden. Beide bieten aber Private Projekte an, die nicht von allen zugänglich sind. Denkbar wäre natürlich auch eine Inhouse-Installation von Jenkins als Build-Automatisierung und JFrog Artifactory OSS als Maven Repository auf einem Server/Notebook/NUC der \acrshort{hftm}.
+Die Projekte aus dieser Arbeit verwenden zur Build-Automatisierung \textbf{Travis CI}\footnote{Travis CI: \url{https://travis-ci.org}} und als Ablage bzw. Maven Repository der Artefakte (Jars) \textbf{JFrog Bintray}\footnote{JFrog Bintray: \url{https://bintray.com}}. Wie das ganze konfiguriert wird ist nicht Teil dieser Arbeit, jedoch in den jeweiligen Teil-Projekten in den Dateien \ctexttt{.travis.yml}, \ctexttt{.travis.revision.sh} und \ctexttt{.travis.settings.xml} ersichtlich. \\ Vermutlich werden für den RoboCup sowieso nur Teile davon als Open Source veröffentlicht und deshalb können diese Anbieter nicht unverändert verwendet werden. Beide bieten aber Private Projekte an, die nicht von allen zugänglich sind. Denkbar wäre natürlich auch eine Inhouse-Installation von Jenkins als Build-Automatisierung und JFrog Artifactory OSS als Maven Repository auf einem Server/Notebook/NUC der \acrshort{hftm}.
 
 \section{Tests / Unit Tests}
 \label{sec:tests_and_unittests}
@@ -222,9 +222,10 @@ Beispiele die sich auf den entwickelten Code beziehen gibt es im Abschnitt mit d
 
 \section{MQTT}
 \label{sec:mqtt}
-\acrshort{mqtt} steht für Message Queue (abgekürzt MQ) Telemetry Transport. Es ist ein leichtgewichtiges Protokoll zum Austausch von Nachrichten über Netzwerke. Es toleriert Netzwerke mit hoher Latenz und schlechter Bandbreite. So wird es häufig für die Machine-to-Machine-Kommunikation (M2M) eingesetzt. Mit Maschine spricht man meist von Sensoren, Aktoren, Mobiltelefonen und embedded Systeme. 
+\acrshort{mqtt} steht für Message Queue Telemetry Transport. Es ist ein leichtgewichtiges Protokoll zum Austausch von Nachrichten über Netzwerke. Es toleriert Netzwerke mit hoher Latenz und schlechter Bandbreite. So wird es häufig für die Machine-to-Machine-Kommunikation (M2M) eingesetzt. Mit Maschine spricht man meist von Sensoren, Aktoren, Mobiltelefonen und embedded Systemen.
 
-\subsection{Publish / Subscribe Pattern}
+\subsection{Publish / Subscribe vs. Request / Response}
+\label{sec:publish-subscribe}
 
 \begin{figure}[H]
 	\centering

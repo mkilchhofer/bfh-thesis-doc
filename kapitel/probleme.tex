@@ -2,8 +2,8 @@
 \section{GatewayClient Library}
 
 Nach einigen Tests mit der Library GatewayClient gibt es folgende Feststellungen:
-\subsection{alle Messages Retained}
-Folgendes Listing \ref{lst:retainedMessages} zeigt ein Subscribe-Vorgang mit dem Linux-Client \verb|mosquitto_sub| wenn keine anderen Clients (Abonnenten und Publisher) mit dem MQTT-Broker verbunden sind. Daraus ist ersichtlich, wie alle Messages vom GatewayClient ,,Retained'' publiziert werden. Darum wird beispielsweise der Lidar-service beim Aufstarten gleich den Befehl ,,Einzelmessung starten'' bekommen, in diesem Beispiel sogar mehrfach (Linie 14 und 16):
+\subsection{Aufstartverhalten der Services (alle Messages Retained)}
+Folgendes Listing \ref{lst:retainedMessages} zeigt ein Subscribe-Vorgang mit dem Linux-Client \ctexttt{\path{mosquitto_sub}} wenn keine anderen Clients (Abonnenten und Publisher) mit dem MQTT-Broker verbunden sind. Daraus ist ersichtlich, wie alle Messages vom GatewayClient ,,Retained'' publiziert werden. Darum wird beispielsweise der TiM55x-service beim Aufstarten gleich den Befehl ,,Einzelmessung starten'' bekommen, in diesem Beispiel sogar mehrfach (Linie 14 und 16 im Listing). Das stört uns aber nicht weiter, weil wir beim TiM55x-Service sowieso nur den letzten Befehl auswerten (siehe \ref{sec:service-logik-tim55x}).
 \begin{lstlisting}[caption={Subscribe mit mosquitto\_sub, Aufstartverhalten},label={lst:retainedMessages}]
 $ mosquitto_sub -h localhost -p 1883 -v -t 'Robocup/#' 
 Robocup/Lidar/U/192.168.91.2@kicm-fedora.localdomain/S/connection ---

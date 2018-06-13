@@ -1,6 +1,10 @@
 \chapter{Ausblick}
-\section{Verbesserungsvorschläge}
-\subsection{GatewayClient}
+\section{API / Bindings in seprartem Projekt}
+\label{sec:separatebindings}
+Beim TiM55x-Service habe ich unbewusst die HFTM-\acrshort{lidar}-Library bis zum Contract durchdrücken lassen. Dies habe ich exemplarisch so beibehalten. Das Problem ist folgendes: der Servant, der mit diesen Service kommuniziert, braucht alle Objekte vom Contract. Die Dependencies eines Services werden beim standardmässigen bauen eines Jars aber nicht eingepackt. Für die Ausführung des Services mit dem Befehl \ctexttt{java -jar paketname.jar} packen wir aber sowieso alle Dependecies in ein Jar, damit lediglich diese Datei aufs Zielsystem deployed / kopiert werden muss. Der Grössenunterschied ist allerdings immens und deshlab sollte ein Servant nicht dieses so genannte Fat-Jar als Depedency reinziehen.
+
+TODO
+
 \begin{itemize}
 	\item
 	GatewayClient und API an MQTT trennen
@@ -9,7 +13,12 @@
 	MQTT API versionieren -> 'alte Dependencies' funktionieren weiterhin mit dem 'alten Service'
 \end{itemize}
 
-\subsection{Servant abkürzen}
+\section{Fehlerbehandlung innerhalb der Services}
+TODO
+
+\section{Servant abkürzen}
+TODO
 Während intensiven Diskussionen mit Reto zum Thema wie sich der Datenaustausch von Service zu Service abkürzen lässt, ist folgende Idee zu Stande gekommen:
 
-
+\section{Performance Serialisieren / Deserialisieren}
+TODO

@@ -94,10 +94,12 @@ Mehrheitlich statische Informationen stellt ein Service unter dem Basis-Topic '\
 Alle Informationen, die eventgesteuert sind oder auftreten können, klassifizieren wir in diese Kategorie. Die Messwerte des Sensors gehören beispielsweise in dieses Topic.
 
 \subsection{Description}
-Im Topic '\gls{description}' beschreibt ein Service bzw. eine \acrshort{unit} beim Aufstarten das angebotene \acrshort{api}. Das ermöglicht für Entwickler die Anbindung an andere Komponenten. Die Description des APIs ist vor allem für die Entwicklung von Services relevant, die nicht den im nachfolgenden Kapitel beschriebenen \path{GatewayClient} verwenden.
+Im Topic '\gls{description}' beschreibt ein Service bzw. eine \acrshort{unit} beim Aufstarten das angebotene \acrshort{api}. Das ermöglicht für Entwickler die Anbindung an andere Komponenten. Die Description des APIs ist vor allem für die Entwicklung von Services relevant, die nicht den im nachfolgenden Kapitel beschriebenen \ctexttt{GatewayClient} verwenden.
 
 \subsection{Beispiele}
 Ein Topic in unserem sieht also Beispielsweise wie folgt aus:
+
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 Robocup/Lidar/U/192.168.91.2@kicm-fedora.localdomain/S/connection
          ^    ^       ^                              ^  ^
@@ -108,19 +110,20 @@ Robocup/Lidar/U/192.168.91.2@kicm-fedora.localdomain/S/connection
          |    '--------------------------------------------- Unit Trennzeichen
          '-------------------------------------------------- Name des Services
 \end{verbatim}
+\end{minipage}
 
 \subsubsection{Beispiel mehrere \acrshort{lidar}-Sensoren}
 Wenn wir mehrere Sensoren verwenden, arbeiten die Instanzen des TiM55x-Services beispielsweise in diesen Basis-Topics:
 \begin{itemize}
-	\item \path{Robocup/Lidar/U/192.168.91.11@mainpc.robot1.hftm.localdomain/...}
-	\item \path{Robocup/Lidar/U/192.168.91.22@mainpc.robot1.hftm.localdomain/...}
-	\item \path{Robocup/Lidar/U/192.168.91.33@mainpc.robot1.hftm.localdomain/...}
+	\item \texttt{Robocup/Lidar/U/192.168.91.11@mainpc.robot1.hftm.localdomain/...}
+	\item \texttt{Robocup/Lidar/U/192.168.91.22@mainpc.robot1.hftm.localdomain/...}
+	\item \texttt{Robocup/Lidar/U/192.168.91.33@mainpc.robot1.hftm.localdomain/...}
 \end{itemize}
 
 \subsubsection{Beispiel \acrshort{lidar}-Sensoren auf einem Roboter verteilt auf mehrere Computer}
 Wenn wir mehrere Sensoren verwenden, arbeiten die Instanzen des TiM55x-Services beispielsweise in diesen Basis-Topics:
 \begin{itemize}
-	\item \path{Robocup/Lidar/U/192.168.91.11@mainpc.robot1.hftm.localdomain/...}
-	\item \path{Robocup/Lidar/U/192.168.91.22@secondpc.robot1.hftm.localdomain/...}
-	\item \path{Robocup/Lidar/U/192.168.91.33@secondpc.robot1.hftm.localdomain/...}
+	\item \texttt{Robocup/Lidar/U/192.168.91.11@mainpc.robot1.hftm.localdomain/...}
+	\item \texttt{Robocup/Lidar/U/192.168.91.22@secondpc.robot1.hftm.localdomain/...}
+	\item \texttt{Robocup/Lidar/U/192.168.91.33@secondpc.robot1.hftm.localdomain/...}
 \end{itemize}
