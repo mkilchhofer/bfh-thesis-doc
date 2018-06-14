@@ -174,7 +174,7 @@ Der Programmcode von oben führt uns zu dieser Struktur für den TiM55x-ServiceC
 \label{sec:service-logik-tim55x}
 Die nachfolgenden Code-Snippets aus Listing \ref{lst:TiM55x-service} zeigen den Aufbau des TiM55x-Service. Der GatewayClient wird über \ctexttt{<LidarServiceContract>} mit dem \Gls{contract} instantiiert, damit er die Schnittstelle kennt. Bei den Zeilen mit \ctexttt{IScanListener ... }, \ctexttt{IScanOperator ...} sowie \ctexttt{new TiM55x(...)} sieht man die Anbindung an die Sensor-Libary. Andersherum bei \ctexttt{MessageReceiver} und \ctexttt{gatewayClient.subscribe} die Anbindung mit dem GatewayClient an \acrshort{mqtt}. Der Code zeigt also schön, wie die 'Service Logic' beide ,,Welten'' zusammenklebt.
 
-\lstinputlisting[caption={Aufbau TiM55x-Service},language=Java,label={lst:TiM55x-service}]{listings/lidarservice_new.java}
+\lstinputlisting[caption={Aufbau TiM55x-Service},language=Java,label={lst:TiM55x-service}]{listings/lidarservice.java}
 
 Beim Verarbeiten des Intents wird es spannend. Wir können mit dem GatewayClient ein Set von Messages erhalten - sprich wir können mehrere Intents zum exakt gleichen Zeitpunkt erhalten. Wir nehmen hier einfach den letzten (also den neuesten) im Set. Wie sich ein Service diesbezüglich verhalten soll, muss je nach Situation geklärt werden. Hier wird es sicherlich keinen Sinn machen, den Laser beispielsweise zu aktivieren und gleich wieder zu deaktivieren. Oder wenn zwei Anfragen für eine Einzel-Messung kommen, reicht es auch, die letzte Anfrage auszuführen, es hören ja alle zu und bekommen die Messwerte geliefert.
 
