@@ -109,7 +109,7 @@ public class Measurement extends AValidator {
     // ...
 }
 \end{lstlisting}
-Über die Annotations geben wir den Variablen die möglichen Werte vor. Damit werden zum einen beim Aufstarten die \Gls{description}-Topics korrekt abgefüllt und zum anderen lassen sich die Empfangenen Werte mit dem \Gls{gatewayclient} validieren (optional). So kann man beispielsweise bestimmen, ob nicht valide Werte weiterverarbeitet werden oder nicht.
+Über die Annotations geben wir den Variablen die möglichen Werte vor. Damit werden zum einen beim Aufstarten die \Gls{description}-Topics korrekt abgefüllt und zum anderen lassen sich die empfangenen Werte mit dem \Gls{gatewayclient} validieren (optional). So kann man beispielsweise bestimmen, ob nicht valide Werte weiterverarbeitet werden oder nicht.
 Die obigen Messpunkte einer Messung werden in einer Liste als 'LidarMeasurementEvent' übermittelt:
 \begin{lstlisting}[caption={TiM55x-Service - Struktur des 'LidarMeasurementEvent'},label={lst:tim55x-measurementEvent}]
 public class LidarMeasurementEvent extends AnEvent{

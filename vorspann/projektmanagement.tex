@@ -20,24 +20,22 @@ Im Dokument 'Bachelorthesis-Aufgabe' ist folgendes festgehalten:
 Aus dieser Eingabe wurden folgende Ziele konkretisiert:
 \subsection{Muss-Kriterien}
 \begin{itemize}
-	\item Beispiel-Services für Lidar, Servant und einem UI zum Interagieren mit dem Sensor
-	\item Handbuch (Howto) für Schüler der \acrshort{hftm}
+	\item Umbau der vorhandenen monolithischen Architektur in eine Microservice-Architektur
+	\item Beispiel-Services für \acrshort{lidar}, Servant und einem UI zum Interagieren mit dem Sensor
+	\item Handbuch / Leitfaden für die Schüler der \acrshort{hftm} erstellen
 	\begin{itemize}
-		\item Maven erklären
-		\item Design erklären
-		\item Umsetzung erklären anhand der Beispiel-Services
+		\item Build-Management einführen und erklären
+		\item Ziel-Design erklären und diskutieren
+		\item Umsetzung erklären anhand der entwickelten Beispiel-Services
 	\end{itemize}
-	\item ...
 \end{itemize}
 
-TODO:
-Reto soll noch die Liste komplettieren
 \subsection{Kann-Kriterien}
 \begin{itemize}
 	\item Lidar Mock
 	\item EdgeDetection Service
 	\item Konzept Bootstrapping-Problem beim Robocup (MQTT-Messages aufzeichnen und abspielen)
-	\item ...
+	\item Testen der Verständlichkeit der Schnittstelle und deren Beschreibung durch ,,usability''-Tests oder Befragungen ausloten
 \end{itemize}
 
 \section{Rahmenbedingungen}
@@ -45,6 +43,7 @@ Die Rahmenbedingungen dieses Projektes wurden gemeinsam mit dem Betreuer definie
 \begin{itemize}
 	\item Source-Code für \acrshort{lidar}-Ansteuerung von \acrshort{hftm}, verwenden als Library
 	\item Library \ctexttt{ch.quantasy.mqtt.gateway} \cite{ch.quantasy.mqtt.gateway} von Reto Koenig als Schnittstelle zum Message-Broker
+	\item Die Vorgabe für den zeitlichen Aufwand von 360 Stunden muss mit dem Arbeitgeber koordiniert werden und in Time-Slots neben der Arbeit eingeteilt werden. Deshalb ist das Zeit-Budget fix auf die 360 Stunden angesetzt.
 \end{itemize}
 
 
@@ -72,7 +71,7 @@ Als Meilensteine wurden lediglich die Termine mit fester Deadline festgelegt.
 	\begin{tabular}{llp{11cm}p{2cm}} \toprule
 		\textbf{\#} 			& \textbf{Termin}	& \textbf{Beschreibung}	& \textbf{Erledigt}	\\ \midrule
 		M1 & 08.03. & \textbf{Konzept verstanden} \newline Konzept verstehen vom GatewayClient, einfacher Service implementiert	& 08.03\\ \midrule
-		M2 & 18.03. & \textbf{Referenzsetup fertiggestellt}\newline  Referenz-Setup mit 2x Service und 1x Servant, bereit um am Experten und Auftraggeber zu zeigen & 17.03.	\\ \midrule
+		M2 & 18.03. & \textbf{Referenzsetup fertiggestellt}\newline  Referenz-Setup mit 2x Service und 1x Servant, bereit um dem Experten und dem Auftraggeber zu zeigen & 17.03.	\\ \midrule
 		M3 & 01.06. & \textbf{Book und Poster}\newline  Plakat und Book fertig für die Abgabe & 01.06	\\ \midrule				
 		M4 & 07.06. & \textbf{Dokumentation dem Auftraggeber vorlegen}\newline  Inhalt für Bericht soweit fertig, dass der Auftraggeber noch letzte Wünsche anbringen kann.& Feedback am 12.06.	\\ \midrule
 		M5 & 14.06. & \textbf{Finish}\newline Bericht finalisiert, gedruckt, Code auf Github, Präsentation vorbereitet.	\\ \bottomrule
@@ -191,4 +190,15 @@ abgesagt da Reto krank -> verschoben auf Fr., 13.04.2018, 09:00
 abgesagt da Reto krank -> verschoben auf Do., 26.04.2018, 15:30
 
 \section{Journal}
-TODO: Bild vom Google Sheets einfügen am Schluss
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{img/journal1.pdf}
+	\caption{Journal, Seite 1}
+	\label{fig:journal1}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{img/journal2.pdf}
+	\caption{Journal, Seite 2}
+	\label{fig:journal2}
+\end{figure}
